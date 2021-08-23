@@ -1,0 +1,22 @@
+.PHONY : build move open texReport
+
+texReport : build move open
+
+build : report.tex
+	pdflatex report.tex
+	bibtex report
+	pdflatex report.tex
+	pdflatex report.tex
+
+move : report.pdf
+	-mkdir ../pdf           
+	mv report.pdf ../pdf/ 
+	-mkdir ../out        
+	-mv *.aux *.log *.bbl *.blg *.dvi *.out ../out/ 
+
+open :
+	okular ../pdf/report.pdf
+
+clear :
+	-rm -rf ../out/ ../pdf/
+	-rm *.aux *.log *.bbl *.blg *.dvi *.out *.pdf
