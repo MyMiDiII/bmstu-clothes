@@ -1,18 +1,17 @@
-report : texReport title
-	pdflatex report.tex
-	bibtex report
-	pdflatex report.tex
-	pdflatex report.tex
-	-mkdir ../pdf
-	mv report.pdf ../pdf/
-	-mkdir out
-	-mv *.aux *.log *.bbl *.blg *.dvi *.out ./out/
-	okular ../pdf/report.pdf
+.PHONY : report title clear main open
 
-texReport : report.tex
-	pdflatex report.tex
+report : title main open
+
+title : ./doc/report.docx
+	-mkdir pdf
+	unoconv -o ./pdf/title.pdf ./doc/report.docx
+
+main : ./tex/MakefileTex
+	cd ./tex && make -f MakefileTex
+	pdfunite pdf/title.pdf pdf/report.pdf pdf/fullReport.pdf
+
+open :
+	okular pdf/fullReport.pdf
 
 clear :
-	-rm -rf ./out/ ../pdf/
-	-rm *.aux *.log *.bbl *.blg *.dvi *.out *.pdf
-
+	rm -rf ./pdf/ ./out/
