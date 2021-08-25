@@ -12,7 +12,7 @@ move : report.pdf
 	-mkdir ../pdf           
 	mv report.pdf ../pdf/ 
 	-mkdir ../out        
-	-mv *.aux *.log *.bbl *.blg *.dvi *.out ../out/ 
+	-mv *.aux *.log *.bbl *.blg *.dvi *.out *.toc ../out/ 
 
 clear :
 	-rm -rf ../out/ ../pdf/
