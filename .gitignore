@@ -1,3 +1,4 @@
+# TEX
 *.aux
 *.log
 *.bbl
@@ -7,3 +8,6 @@
 *.toc
 *report.pdf
 *title.pdf
+
+# PYTHON
+*/__pycache__/*
