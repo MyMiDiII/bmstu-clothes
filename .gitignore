@@ -1,13 +1,2 @@
-# TEX
-*.aux
-*.log
-*.bbl
-*.blg
-*.dvi
-*.out
-*.toc
-*report.pdf
-*title.pdf
-
-# PYTHON
-*/__pycache__/*
+*articles/
+*devs/
