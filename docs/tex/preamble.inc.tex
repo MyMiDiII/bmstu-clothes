@@ -41,4 +41,32 @@
 
 % Lists
 \usepackage{enumitem}
-\renewcommand{\labelitemi}{$-$}
+\renewcommand{\labelitemi}{---}
+
+% Images
+\usepackage{graphicx}
+\graphicspath{{../data/img/}}
+
+% image 
+\newcommand{\img}[3]
+{
+	\begin{figure}[h!]
+		\center{\includegraphics[height=#1]{#2}}
+		\caption{#3}
+		\label{img:#2}
+	\end{figure}
+}
+
+% subimage
+\newcommand{\subimg}[3]
+{
+    \subfigure[]
+    {
+        \includegraphics[height=#1]{#2}
+        \label{subimg:#3}
+    }
+}
+
+\usepackage{subfigure}
+\usepackage[figurename=Рисунок,labelsep=endash,
+            justification=centering]{caption}
