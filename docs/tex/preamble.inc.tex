@@ -38,18 +38,19 @@
 % Lists
 \usepackage{enumitem}
 \renewcommand{\labelitemi}{---}
+\setlist{wide}
 
 % Images
 \usepackage{graphicx}
 \graphicspath{{../data/img/}}
 
 % image 
-\newcommand{\img}[3]
+\newcommand{\img}[4]
 {
 	\begin{figure}[h!]
 		\center{\includegraphics[height=#1]{#2}}
 		\caption{#3}
-		\label{img:#2}
+		\label{img:#4}
 	\end{figure}
 }
 
@@ -66,3 +67,6 @@
 \usepackage{subfigure}
 \usepackage[figurename=Рисунок,labelsep=endash,
             justification=centering]{caption}
+
+% Formulas
+\usepackage{mathtools}
