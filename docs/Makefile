@@ -2,6 +2,11 @@
 
 report : title main open
 
+TOR : ./doc/TOR.docx
+	-mkdir pdf
+	unoconv -o ./pdf/TOR.pdf ./doc/TOR.docx
+	okular pdf/TOR.pdf
+
 title : ./doc/report.docx
 	-mkdir pdf
 	unoconv -o ./pdf/title.pdf ./doc/report.docx
