@@ -19,10 +19,7 @@ class myGL(QtOpenGL.QGLWidget):
         pass 
 
     def paintGL(self):
-        GLUT.glutInit(sys.argv)
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-        GLUT.glutWireTeapot(0.1)
-        gl.glFlush()
+        pass
 
     def initGeometry(self):
         pass
