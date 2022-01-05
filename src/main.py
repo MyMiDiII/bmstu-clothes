@@ -7,6 +7,8 @@ from PyQt5.QtWidgets import QMessageBox
 
 from ui_mainwindow import Ui_MainWindow
 
+import load
+
 ################################################
 
 from datetime import date
@@ -28,13 +30,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setPalette(DarkPalette())
         self.loadModelBtn.clicked.connect(self.load)
+        self.yLeftTurnBtn.clicked.connect(self.leftTurn)
 
     def load(self):
+        load.Load('cube.obj').load()
+        self.GL.paintGL()
         QMessageBox.warning(
                 self,
                 ":(", "Уже "
                 + date.today().strftime('%d.%m.%Y')
                 + "!\nА эта кнопка все ещё не работает!")
+
+    def leftTurn(self):
+        self.GL.transform((10, 0, 1, 0))
 
 
 if __name__ == '__main__':
