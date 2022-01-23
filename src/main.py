@@ -6,6 +6,7 @@ from darktheme.widget_template import DarkPalette
 import PyQt5.QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtGui import QColor
 
 from ui_mainwindow import Ui_MainWindow
 
@@ -51,10 +52,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         pass
 
 
-    def changeColor(self, color):
+    def changeColor(self, color: QColor):
         self.colorBtn.setStyleSheet(
             BACKGROUNDSTRING % color.name()
         )
+        self.GL.changeColor(color.getRgbF())
 
     def chooseColor(self):
         """
