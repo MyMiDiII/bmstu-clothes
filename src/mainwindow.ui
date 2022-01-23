@@ -83,7 +83,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="0" rowspan="2">
-          <layout class="QGridLayout" name="moveLayout">
+          <layout class="QGridLayout" name="camLayout">
            <item row="0" column="1">
             <widget class="QPushButton" name="upBtn">
              <property name="sizePolicy">
@@ -240,13 +240,13 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="camBox_2">
+       <widget class="QGroupBox" name="turnBox">
         <property name="title">
          <string>Поворот</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_3">
          <item row="0" column="0" rowspan="2">
-          <layout class="QGridLayout" name="moveLayout_2">
+          <layout class="QGridLayout" name="turnLayout">
            <item row="0" column="1">
             <widget class="QPushButton" name="xUpTurnBtn">
              <property name="sizePolicy">
@@ -400,6 +400,16 @@
           </layout>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="colorBtn">
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
        </widget>
       </item>
      </layout>
