@@ -8,8 +8,9 @@ class MiniColorDialog(QtWidgets.QColorDialog):
         self.setSizeGripEnabled(True)
         self.layout().setSizeConstraint(QLayout.SetNoConstraint)
 
+        self.setWindowTitle("Цвет")
+        self.setFixedSize(200, 150)
         self.__minimize()
-        self.__resize()
         self.__move()
 
     def __minimize(self):
@@ -18,9 +19,6 @@ class MiniColorDialog(QtWidgets.QColorDialog):
             if classname not in ("QColorPicker", "QColorLuminancePicker"):
                 children.hide()
 
-
-    def __resize(self):
-        self.resize(200, 100)
 
     def __move(self):
         screenSize = QApplication.desktop().availableGeometry().getRect()[2:]
