@@ -40,23 +40,6 @@ class myGL(QtOpenGL.QGLWidget):
     def paintGL(self):
         print("PAINT!")
         print(list(self.indices))
-        #gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-
-        #VAO = gl.glGenVertexArrays(1)
-        #gl.glBindVertexArray(VAO)
-
-        #VBO = gl.glGenBuffers(1)
-        #gl.glBindBuffer(gl.GL_ARRAY_BUFFER, VBO)
-        #gl.glBufferData(gl.GL_ARRAY_BUFFER, self.vrtxs, gl.GL_STATIC_DRAW)
-
-        #gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, False, 0, None)
-        #gl.glEnableVertexAttribArray(0)
-
-        #gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0)
-        #gl.glBindVertexArray(0)
-
-        #gl.glBindVertexArray(VAO)
-        #gl.glDrawArrays(gl.GL_TRIANGLES, 0, 3)
 
         # очищаем экран
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
@@ -83,7 +66,7 @@ class myGL(QtOpenGL.QGLWidget):
         # рисуем
         gl.glBindVertexArray(VAO)
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
-        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        #gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         print("PAINT END!")
 
 
