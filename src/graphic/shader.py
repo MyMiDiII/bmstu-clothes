@@ -57,13 +57,13 @@ class Shader:
 
             if not success:
                 infoLog = gl.glGetShaderInfoLog(obj)
-                print("Shader compilation error!" + infoLog)
+                print("Shader compilation error!" + infoLog.decode())
         else:
             success = gl.glGetProgramiv(obj, gl.GL_LINK_STATUS)
 
             if not success:
                 infoLog = gl.glGetProgramInfoLog(obj)
-                print("Program linking error!\n" + infoLog)
+                print("Program linking error!\n" + infoLog.decode())
 
     def use(self):
         gl.glUseProgram(self.programID)
