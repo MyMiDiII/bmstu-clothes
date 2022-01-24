@@ -10,23 +10,8 @@ import glm
 import glfw
 import numpy as np
 
-vertexShaderSource = """#version 330 core
-layout (location = 0) in vec3 aPos;
-void main()
-{
-   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-}
-"""
+from graphic.shader import Shader
 
-fragmentShaderSource = """
-#version 330 core
-out vec4 FragColor;
-uniform vec4 curColor;
-void main()
-{
-   FragColor = curColor; 
-}
-"""
 
 class myGL(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):
@@ -61,40 +46,6 @@ class myGL(QtOpenGL.QGLWidget):
         self.proj.perspective(45, width / height, 0.01, 100)
 
     def __loadShaders(self):
-#        vertexShader = gl.glCreateShader(gl.GL_VERTEX_SHADER)
-#        gl.glShaderSource(vertexShader, vertexShaderSource)
-#        gl.glCompileShader(vertexShader)
-#        
-#        success = gl.glGetShaderiv(vertexShader, gl.GL_COMPILE_STATUS)
-#        if (not success):
-#            infoLog = gl.glGetShaderInfoLog(vertexShader)
-#            print("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" + infoLog.decode())
-
-        fragmentShader = gl.glCreateShader(gl.GL_FRAGMENT_SHADER)
-        gl.glShaderSource(fragmentShader, fragmentShaderSource)
-        gl.glCompileShader(fragmentShader)
-
-        success = gl.glGetShaderiv(fragmentShader,
-                gl.GL_COMPILE_STATUS)
-
-        if not success:
-            infoLog = gl.glGetShaderInfoLog(fragmentShader)
-            print("SHADERS COMPILATION ERROR!" + infoLog)
-
-        shaderProgram = gl.glCreateProgram()
-#        gl.glAttachShader(shaderProgram, vertexShader)
-        gl.glAttachShader(shaderProgram, fragmentShader)
-        gl.glLinkProgram(shaderProgram)
-
-        success = gl.glGetProgramiv(shaderProgram,
-                gl.GL_LINK_STATUS)
-
-        if not success:
-            infoLog = gl.glGetProgramInfoLog(shaderProgram)
-            print("Program linking error!\n" + infoLog)
-
-#        gl.glDeleteShader(vertexShader)
-        gl.glDeleteShader(fragmentShader)
 
         return shaderProgram
 
@@ -126,13 +77,12 @@ class myGL(QtOpenGL.QGLWidget):
         gl.glEnableVertexAttribArray(0)
 
         # устанавливаем шейдры
-        self.shaderProgram = self.__loadShaders()
-        gl.glUseProgram(self.shaderProgram)
+        shader = Shader("shader.vs", "shader.fs")
+        shader.use()
 
         # устанавливаем цвет
-        location = gl.glGetUniformLocation(self.shaderProgram, "curColor")
-        print("paint color", self.color)
-        gl.glUniform4f(location, *self.color)
+        print("self", self.color)
+        shader.setVec4("curColor", *self.color)
 
         # рисуем
         gl.glBindVertexArray(VAO)
