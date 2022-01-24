@@ -226,4 +226,4 @@ class Ui_MainWindow(object):
         self.zLeftTurnBtn.setText(_translate("MainWindow", "⭯"))
         self.yRightTurnBtn.setText(_translate("MainWindow", "→"))
         self.yLeftTurnBtn.setText(_translate("MainWindow", "←"))
-from mygl import myGL
+from graphic.mygl import myGL

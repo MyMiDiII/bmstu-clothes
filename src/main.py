@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QColorDialog
 from PyQt5.QtGui import QColor
 
-from ui_mainwindow import Ui_MainWindow
+from graphic.ui_mainwindow import Ui_MainWindow
 
 from widgets.colordialog import MiniColorDialog
 import load
