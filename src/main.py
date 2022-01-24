@@ -3,6 +3,7 @@ import sys
 from PyQt5 import QtWidgets, uic
 from darktheme.widget_template import DarkPalette
 
+import PyQt5.QtCore as QtCore
 import PyQt5.QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QColorDialog
@@ -33,11 +34,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
+        self.curColor = QColor(1, 1, 1, 1)
+        self.saveColor = self.curColor
 
         self.setPalette(DarkPalette())
         self.loadModelBtn.clicked.connect(self.load)
         self.yLeftTurnBtn.clicked.connect(self.leftTurn)
         self.colorBtn.clicked.connect(self.chooseColor)
+
+        timer = QtCore.QTimer(self)
+        timer.setInterval(50)
+        timer.timeout.connect(self.timerActions)
+        timer.start()
 
     def load(self):
         load.Load('cube.obj').load()
@@ -48,6 +56,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + date.today().strftime('%d.%m.%Y')
                 + "!\nА эта кнопка все ещё не работает!")
 
+    def timerActions(self):
+        if self.curColor != self.saveColor:
+            self.GL.changeColor(self.curColor.getRgbF())
+
+        self.GL.addAngle(-0.5)
+        self.saveColor = self.curColor
+
+
     def leftTurn(self):
         pass
 
@@ -56,7 +72,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.colorBtn.setStyleSheet(
             BACKGROUNDSTRING % color.name()
         )
-        self.GL.changeColor(color.getRgbF())
+        self.curColor = color
 
     def chooseColor(self):
         """

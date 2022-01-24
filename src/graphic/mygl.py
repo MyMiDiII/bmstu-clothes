@@ -18,8 +18,8 @@ class myGL(QtOpenGL.QGLWidget):
         self.parent = parent
         QtOpenGL.QGLWidget.__init__(self, parent)
         self.proj = QMatrix4x4()
-        self.shaderProgram = None
         self.color = (255, 255, 255, 1.0)
+        self.angle = 0
 
         # !!! в класс модельки
         self.vrtxs = np.array(
@@ -36,18 +36,18 @@ class myGL(QtOpenGL.QGLWidget):
         self.color = color
         self.updateGL()
 
+
     def initializeGL(self):
         self.qglClearColor(QtGui.QColor(50, 50, 50))
         gl.glEnable(gl.GL_DEPTH_TEST)
 
+
     def resizeGL(self, width, height):
-        gl.glViewport(0, 0, width, height)
+        minSize = min(width, height)
+        gl.glViewport((width - minSize) // 2, (height - minSize) // 2,
+                      minSize, minSize)
         self.proj.setToIdentity()
-        self.proj.perspective(45, width / height, 0.01, 100)
-
-    def __loadShaders(self):
-
-        return shaderProgram
+        self.proj.perspective(60, 1, 1, 100)
 
 
     def paintGL(self):
@@ -80,8 +80,13 @@ class myGL(QtOpenGL.QGLWidget):
         shader = Shader("shader.vs", "shader.fs")
         shader.use()
 
+        # преобразование
+        transform = glm.mat4(1.0);
+        transform = glm.rotate(transform, glm.radians(self.angle),
+                                glm.vec3(0, 0, 1))
+        shader.setMat4("transform", transform)
+
         # устанавливаем цвет
-        print("self", self.color)
         shader.setVec4("curColor", *self.color)
 
         # рисуем
@@ -89,6 +94,11 @@ class myGL(QtOpenGL.QGLWidget):
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
         #gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         print("PAINT END!")
+
+
+    def addAngle(self, angle):
+        self.angle = (self.angle + angle) % 360
+        self.updateGL()
 
 
     def transform(self, turn):

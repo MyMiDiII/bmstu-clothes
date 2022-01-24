@@ -1,4 +1,5 @@
 import OpenGL.GL as gl
+import glm
 from graphic.config import SHADER_PATH
 
 # !!! если что-то не так, проверь value_ptr
@@ -65,8 +66,15 @@ class Shader:
                 infoLog = gl.glGetProgramInfoLog(obj)
                 print("Program linking error!\n" + infoLog.decode())
 
+
     def use(self):
         gl.glUseProgram(self.programID)
+
+
+    def setMat4(self, name, matrix):
+        location = gl.glGetUniformLocation(self.programID, name)
+        gl.glUniformMatrix4fv(location, 1, gl.GL_FALSE, glm.value_ptr(matrix))
+
 
     def setVec4(self, name, *values):
         location = gl.glGetUniformLocation(self.programID, name)
