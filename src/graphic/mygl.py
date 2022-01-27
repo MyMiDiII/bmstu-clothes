@@ -13,6 +13,7 @@ import numpy as np
 from graphic.shader import Shader
 
 from graphic.objects.object import Object
+from graphic.objects.camera import Camera
 
 class myGL(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):
@@ -22,6 +23,7 @@ class myGL(QtOpenGL.QGLWidget):
         self.color = (255, 255, 255, 1.0)
         self.angle = 0
         self.object = Object()
+        self.camera = Camera()
 
         # !!! в класс модельки
         self.vrtxs = np.array(
@@ -33,6 +35,7 @@ class myGL(QtOpenGL.QGLWidget):
         dtype='float32')
 
         self.indices = np.array([0, 1, 3, 1, 2, 3], dtype='int32')
+
 
     def update(self, color):
         self.color = color
@@ -47,9 +50,10 @@ class myGL(QtOpenGL.QGLWidget):
 
 
     def resizeGL(self, width, height):
+        print("resize")
         gl.glViewport(0, 0, width, height)
         self.proj = glm.perspective(glm.radians(45), width / height, 0.01, 100)
-        self.proj = glm.translate(self.proj, glm.vec3(0, 0, -3))
+        self.camera.setPosition([0, 0, 3])
 
 
     def paintGL(self):
@@ -83,9 +87,10 @@ class myGL(QtOpenGL.QGLWidget):
         shader.use()
 
         # преобразование
-        print(self.proj * self.object.getModelMatrix())
-        self.object.rotateZ(0.5)
+        print(self.camera.getVeiwMatrix())
+        self.object.rotateZ(1)
         shader.setMat4("perspective", self.proj)
+        shader.setMat4("view", self.camera.getVeiwMatrix())
         shader.setMat4("model", self.object.getModelMatrix())
 
         # устанавливаем цвет
@@ -94,7 +99,7 @@ class myGL(QtOpenGL.QGLWidget):
         # рисуем
         gl.glBindVertexArray(VAO)
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
-        #gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         #print("PAINT END!")
 
 
