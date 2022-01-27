@@ -12,14 +12,16 @@ import numpy as np
 
 from graphic.shader import Shader
 
+from graphic.objects.object import Object
 
 class myGL(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):
         self.parent = parent
         QtOpenGL.QGLWidget.__init__(self, parent)
-        self.proj = QMatrix4x4()
+        self.proj = None
         self.color = (255, 255, 255, 1.0)
         self.angle = 0
+        self.object = Object()
 
         # !!! в класс модельки
         self.vrtxs = np.array(
@@ -32,22 +34,22 @@ class myGL(QtOpenGL.QGLWidget):
 
         self.indices = np.array([0, 1, 3, 1, 2, 3], dtype='int32')
 
-    def changeColor(self, color):
+    def update(self, color):
         self.color = color
         self.updateGL()
 
 
     def initializeGL(self):
+        print("INIT")
+        #print(self.proj)
         self.qglClearColor(QtGui.QColor(50, 50, 50))
         gl.glEnable(gl.GL_DEPTH_TEST)
 
 
     def resizeGL(self, width, height):
-        minSize = min(width, height)
-        gl.glViewport((width - minSize) // 2, (height - minSize) // 2,
-                      minSize, minSize)
-        self.proj.setToIdentity()
-        self.proj.perspective(60, 1, 1, 100)
+        gl.glViewport(0, 0, width, height)
+        self.proj = glm.perspective(glm.radians(45), width / height, 0.01, 100)
+        self.proj = glm.translate(self.proj, glm.vec3(0, 0, -3))
 
 
     def paintGL(self):
@@ -81,10 +83,10 @@ class myGL(QtOpenGL.QGLWidget):
         shader.use()
 
         # преобразование
-        transform = glm.mat4(1.0);
-        transform = glm.rotate(transform, glm.radians(self.angle),
-                                glm.vec3(0, 0, 1))
-        shader.setMat4("transform", transform)
+        print(self.proj * self.object.getModelMatrix())
+        self.object.rotateZ(0.5)
+        shader.setMat4("perspective", self.proj)
+        shader.setMat4("model", self.object.getModelMatrix())
 
         # устанавливаем цвет
         shader.setVec4("curColor", *self.color)
@@ -93,12 +95,7 @@ class myGL(QtOpenGL.QGLWidget):
         gl.glBindVertexArray(VAO)
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
         #gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
-        print("PAINT END!")
-
-
-    def addAngle(self, angle):
-        self.angle = (self.angle + angle) % 360
-        self.updateGL()
+        #print("PAINT END!")
 
 
     def transform(self, turn):

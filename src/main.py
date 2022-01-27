@@ -34,8 +34,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
-        self.curColor = QColor(1, 1, 1, 1)
-        self.saveColor = self.curColor
+        self.curColor = QColor(255, 255, 255, 1)
+        self.colorWindow = None
 
         self.setPalette(DarkPalette())
         self.loadModelBtn.clicked.connect(self.load)
@@ -56,12 +56,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + date.today().strftime('%d.%m.%Y')
                 + "!\nА эта кнопка все ещё не работает!")
 
-    def timerActions(self):
-        if self.curColor != self.saveColor:
-            self.GL.changeColor(self.curColor.getRgbF())
 
-        self.GL.addAngle(-0.5)
-        self.saveColor = self.curColor
+    def timerActions(self):
+        if self.colorWindow:
+            self.curColor = self.colorWindow.currentColor()
+            self.colorBtn.setStyleSheet(
+                BACKGROUNDSTRING % self.curColor.name()
+            )
+
+        self.GL.update(self.curColor.getRgbF())
 
 
     def leftTurn(self):
@@ -69,18 +72,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def changeColor(self, color: QColor):
-        self.colorBtn.setStyleSheet(
-            BACKGROUNDSTRING % color.name()
-        )
         self.curColor = color
 
     def chooseColor(self):
         """
             Выбор цвета отрезков
         """
-        colorWindow = MiniColorDialog(self)
-        colorWindow.currentColorChanged.connect(self.changeColor)
-        colorWindow.show()
+        self.colorWindow = MiniColorDialog(self)
+        self.colorWindow.setCurrentColor(self.curColor)
+        self.colorWindow.show()
 
 
 if __name__ == '__main__':
