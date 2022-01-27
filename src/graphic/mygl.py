@@ -43,21 +43,21 @@ class myGL(QtOpenGL.QGLWidget):
 
 
     def initializeGL(self):
-        print("INIT")
+        #print("INIT")
         #print(self.proj)
         self.qglClearColor(QtGui.QColor(50, 50, 50))
         gl.glEnable(gl.GL_DEPTH_TEST)
 
 
     def resizeGL(self, width, height):
-        print("resize")
+        #print("resize")
         gl.glViewport(0, 0, width, height)
-        self.proj = glm.perspective(glm.radians(45), width / height, 0.01, 100)
+        self.camera.changePerspective(ratio=width/height)
         self.camera.setPosition([0, 0, 3])
 
 
     def paintGL(self):
-        print("PAINT!")
+        #print("PAINT!")
         #print(list(self.indices))
 
         # очищаем экран
@@ -87,9 +87,7 @@ class myGL(QtOpenGL.QGLWidget):
         shader.use()
 
         # преобразование
-        print(self.camera.getVeiwMatrix())
-        self.object.rotateZ(1)
-        shader.setMat4("perspective", self.proj)
+        shader.setMat4("perspective", self.camera.getProjMatrix())
         shader.setMat4("view", self.camera.getVeiwMatrix())
         shader.setMat4("model", self.object.getModelMatrix())
 
@@ -99,9 +97,20 @@ class myGL(QtOpenGL.QGLWidget):
         # рисуем
         gl.glBindVertexArray(VAO)
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
-        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        #gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         #print("PAINT END!")
 
 
-    def transform(self, turn):
-        print("TURN!")
+    def transform(self, vec, mode):
+        if mode == "translate" and len(vec) == 3:
+            self.camera.translate(*vec)
+        elif mode == "scale" and len(vec) == 1:
+            self.camera.changeAngle(*vec)
+        elif mode == "rotate" and len(vec) == 3:
+            self.camera.rotateX(vec[0])
+            self.camera.rotateY(vec[1])
+            self.camera.rotateZ(vec[2])
+        else:
+            print("error")
+
+        #self.update(self.color)

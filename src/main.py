@@ -39,7 +39,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setPalette(DarkPalette())
         self.loadModelBtn.clicked.connect(self.load)
-        self.yLeftTurnBtn.clicked.connect(self.leftTurn)
+
+        self.plusBtn.clicked.connect(self.scalePlus)
+        self.minusBtn.clicked.connect(self.scaleMinus)
+
+        self.upBtn.clicked.connect(self.moveUp)
+        self.downBtn.clicked.connect(self.moveDown)
+        self.rightBtn.clicked.connect(self.moveRight)
+        self.leftBtn.clicked.connect(self.moveLeft)
+        self.fromBtn.clicked.connect(self.moveFrom)
+        self.toBtn.clicked.connect(self.moveTo)
+
+        self.xLeftTurnBtn.clicked.connect(self.xLeftRotate)
+        self.xRightTurnBtn.clicked.connect(self.xRightRotate)
+        self.yUpTurnBtn.clicked.connect(self.yUpRotate)
+        self.yDownTurnBtn.clicked.connect(self.yDownRotate)
+        self.zLeftTurnBtn.clicked.connect(self.zLeftRotate)
+        self.zRightTurnBtn.clicked.connect(self.zRightRotate)
+
         self.colorBtn.clicked.connect(self.chooseColor)
 
         timer = QtCore.QTimer(self)
@@ -57,6 +74,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + "!\nА эта кнопка все ещё не работает!")
 
 
+    def chooseColor(self):
+        self.colorWindow = MiniColorDialog(self)
+        self.colorWindow.setCurrentColor(self.curColor)
+        self.colorWindow.show()
+
+
     def timerActions(self):
         if self.colorWindow:
             self.curColor = self.colorWindow.currentColor()
@@ -67,20 +90,62 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.GL.update(self.curColor.getRgbF())
 
 
-    def leftTurn(self):
-        pass
+    def scalePlus(self):
+        self.GL.transform((-1,), "scale")
 
 
-    def changeColor(self, color: QColor):
-        self.curColor = color
+    def scaleMinus(self):
+        self.GL.transform((1,), "scale")
 
-    def chooseColor(self):
-        """
-            Выбор цвета отрезков
-        """
-        self.colorWindow = MiniColorDialog(self)
-        self.colorWindow.setCurrentColor(self.curColor)
-        self.colorWindow.show()
+
+    def moveUp(self):
+        self.GL.transform((0, 0.1, 0), "translate")
+
+
+    def moveDown(self):
+        self.GL.transform((0, -0.1, 0), "translate")
+
+
+    def moveRight(self):
+        self.GL.transform((0.1, 0, 0), "translate")
+
+
+    def moveLeft(self):
+        self.GL.transform((-0.1, 0, 0), "translate")
+
+
+    def moveFrom(self):
+        self.GL.transform((0, 0, -0.1), "translate")
+
+
+    def moveTo(self):
+        self.GL.transform((0, 0, 0.1), "translate")
+
+
+    def xLeftRotate(self):
+        self.GL.transform((0, 1, 0), "rotate")
+
+
+    def xRightRotate(self):
+        self.GL.transform((0, -1, 0), "rotate")
+
+
+    def yUpRotate(self):
+        self.GL.transform((1, 0, 0), "rotate")
+
+
+    def yDownRotate(self):
+        self.GL.transform((-1, 0, 0), "rotate")
+
+
+    def zLeftRotate(self):
+        print("zlr")
+        self.GL.transform((0, 0, 1), "rotate")
+
+
+    def zRightRotate(self):
+        print("zrr")
+        self.GL.transform((0, 0, -1), "rotate")
 
 
 if __name__ == '__main__':
