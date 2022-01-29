@@ -54,6 +54,11 @@ class Camera(Object):
         super().rotateZ(angle)
         self.__updateViewMatrix()
 
+
+    def rotateByAxis(self, axis, angle):
+        super().rotateByAxis(axis, angle)
+        self.__updateViewMatrix()
+
     
     def changePerspective(self, angle=45, ratio=1, near=0.01, far=100):
         self.angle = angle
@@ -62,5 +67,11 @@ class Camera(Object):
         self.far = far
 
 
-    def changeAngle(self, k):
-        self.angle = self.angle + k
+    def zoom(self, k):
+        self.angle -= k
+        if self.angle < 1.0:
+            self.angle = 1.0
+        if self.angle > 100.0:
+            self.angle = 100.0
+        print(self.angle)
+

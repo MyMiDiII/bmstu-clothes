@@ -33,6 +33,11 @@ class Object(object):
                                         glm.vec3(0, 0, 1))
 
 
+    def rotateByAxis(self, axis, angle):
+        self.modelMatrix = glm.rotate(self.modelMatrix, glm.radians(angle),
+                                        glm.normalize(glm.vec3(*axis)))
+
+
     def scale(self, k):
         self.modelMatrix = glm.scale(self.modelMatrix, glm.vec3(k))
 

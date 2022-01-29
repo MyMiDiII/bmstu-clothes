@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets, uic
 from darktheme.widget_template import DarkPalette
 
 import PyQt5.QtCore as QtCore
+from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QColorDialog
@@ -34,8 +35,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
+
         self.curColor = QColor(255, 255, 255, 1)
         self.colorWindow = None
+
+        self.translateVec = [0] * 3
 
         self.setPalette(DarkPalette())
         self.loadModelBtn.clicked.connect(self.load)
@@ -64,6 +68,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         timer.timeout.connect(self.timerActions)
         timer.start()
 
+
     def load(self):
         load.Load('cube.obj').load()
         self.GL.paintGL()
@@ -87,6 +92,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 BACKGROUNDSTRING % self.curColor.name()
             )
 
+        self.GL.transform(self.translateVec, "translate")
         self.GL.update(self.curColor.getRgbF())
 
 
@@ -139,13 +145,33 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def zLeftRotate(self):
-        print("zlr")
         self.GL.transform((0, 0, 1), "rotate")
 
 
     def zRightRotate(self):
-        print("zrr")
         self.GL.transform((0, 0, -1), "rotate")
+
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_W:
+            self.translateVec[2] = -0.1
+        elif event.key() == Qt.Key_S:
+            self.translateVec[2] = 0.1
+        elif event.key() == Qt.Key_A:
+            self.translateVec[0] = -0.05
+        elif event.key() == Qt.Key_D:
+            self.translateVec[0] = 0.05
+
+
+    def keyReleaseEvent(self, event):
+        if event.key() == Qt.Key_W:
+            self.translateVec[2] = 0
+        elif event.key() == Qt.Key_S:
+            self.translateVec[2] = 0
+        elif event.key() == Qt.Key_A:
+            self.translateVec[0] = 0
+        elif event.key() == Qt.Key_D:
+            self.translateVec[0] = 0
 
 
 if __name__ == '__main__':
