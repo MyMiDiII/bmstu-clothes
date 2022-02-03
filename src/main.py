@@ -39,7 +39,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.curColor = QColor(255, 255, 255, 1)
         self.colorWindow = None
 
-        self.translateVec = [0] * 3
+        self.translateVec = {"w" : False, "s" : False,
+                             "a" : False, "d" : False}
 
         self.setPalette(DarkPalette())
         self.loadModelBtn.clicked.connect(self.load)
@@ -92,86 +93,85 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 BACKGROUNDSTRING % self.curColor.name()
             )
 
-        self.GL.transform(self.translateVec, "translate")
-        self.GL.update(self.curColor.getRgbF())
+        self.GL.update(self.curColor.getRgbF(), self.translateVec)
 
 
     def scalePlus(self):
-        self.GL.transform((-1,), "scale")
+        self.GL.scale(1)
 
 
     def scaleMinus(self):
-        self.GL.transform((1,), "scale")
+        self.GL.scale(-1)
 
 
     def moveUp(self):
-        self.GL.transform((0, 0.1, 0), "translate")
+        self.GL.translate((0, 0.05, 0))
 
 
     def moveDown(self):
-        self.GL.transform((0, -0.1, 0), "translate")
+        self.GL.translate((0, -0.05, 0))
 
 
     def moveRight(self):
-        self.GL.transform((0.1, 0, 0), "translate")
+        self.GL.translate((0.05, 0, 0))
 
 
     def moveLeft(self):
-        self.GL.transform((-0.1, 0, 0), "translate")
+        self.GL.translate((-0.05, 0, 0))
 
 
     def moveFrom(self):
-        self.GL.transform((0, 0, -0.1), "translate")
+        self.GL.translate((0, 0, -0.05))
 
 
     def moveTo(self):
-        self.GL.transform((0, 0, 0.1), "translate")
+        self.GL.translate((0, 0, 0.05))
 
 
     def xLeftRotate(self):
-        self.GL.transform((0, 1, 0), "rotate")
+        self.GL.rotate((0, 1, 0))
 
 
     def xRightRotate(self):
-        self.GL.transform((0, -1, 0), "rotate")
+        self.GL.rotate((0, -1, 0))
 
 
     def yUpRotate(self):
-        self.GL.transform((1, 0, 0), "rotate")
+        self.GL.rotate((1, 0, 0))
 
 
     def yDownRotate(self):
-        self.GL.transform((-1, 0, 0), "rotate")
+        self.GL.rotate((-1, 0, 0))
 
 
     def zLeftRotate(self):
-        self.GL.transform((0, 0, 1), "rotate")
+        self.GL.rotate((0, 0, 1))
 
 
     def zRightRotate(self):
-        self.GL.transform((0, 0, -1), "rotate")
+        self.GL.rotate((0, 0, -1))
 
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_W:
-            self.translateVec[2] = -0.1
+            self.translateVec["w"] = True
         elif event.key() == Qt.Key_S:
-            self.translateVec[2] = 0.1
+            self.translateVec["s"] = True
         elif event.key() == Qt.Key_A:
-            self.translateVec[0] = -0.05
+            self.translateVec["a"] = True
         elif event.key() == Qt.Key_D:
-            self.translateVec[0] = 0.05
+            self.translateVec["d"] = True
 
 
     def keyReleaseEvent(self, event):
         if event.key() == Qt.Key_W:
-            self.translateVec[2] = 0
+            self.translateVec["w"] = False
         elif event.key() == Qt.Key_S:
-            self.translateVec[2] = 0
+            self.translateVec["s"] = False
         elif event.key() == Qt.Key_A:
-            self.translateVec[0] = 0
+            self.translateVec["a"] = False
         elif event.key() == Qt.Key_D:
-            self.translateVec[0] = 0
+            self.translateVec["d"] = False
 
 
 if __name__ == '__main__':

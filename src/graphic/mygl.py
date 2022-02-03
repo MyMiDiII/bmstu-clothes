@@ -5,7 +5,7 @@ from PyQt5.QtGui import QMatrix4x4, QCursor
 import OpenGL.GL as gl
 from OpenGL import GLU
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPoint
 from OpenGL.arrays import vbo
 import glm
 import glfw
@@ -101,28 +101,26 @@ class myGL(QtOpenGL.QGLWidget):
         #print("PAINT END!")
 
 
-    def transform(self, vec, mode):
-        if mode == "translate" and len(vec) == 3:
-            self.camera.translate(*vec)
-        elif mode == "scale" and len(vec) == 1:
-            self.camera.changeAngle(*vec)
-        elif mode == "rotate" and len(vec) == 3:
-            self.camera.rotateX(vec[0])
-            self.camera.rotateY(vec[1])
-            self.camera.rotateZ(vec[2])
-        else:
-            print("error")
+    def translate(self, vec):
+        self.camera.translate(*vec)
 
-        #self.update(self.color)
+
+    def scale(self, coef):
+        self.camera.zoom(coef)
+
+
+    def rotate(self, vec):
+        self.camera.rotateX(vec[0])
+        self.camera.rotateY(vec[1])
+        self.camera.rotateZ(vec[2])
 
     
     def mousePressEvent(self, event):
         selfPos = self.pos()
-        self.lastPos = [
-                selfPos.x() + self.width() // 2,
-                selfPos.y() + self.height() // 2
-        ]
-        #QCursor().setPos(*self.lastPos)
+        self.lastPos = QPoint(selfPos.x() + self.width() // 2,
+                              selfPos.y() + self.height() // 2
+                       )
+        self.cursor.setPos(self.lastPos)
         self.cursor.setShape(Qt.BlankCursor)
 
         if event.button() == Qt.LeftButton:
@@ -136,22 +134,16 @@ class myGL(QtOpenGL.QGLWidget):
 
 
     def mouseMoveEvent(self, event):
-        curX, curY = event.x(), event.y()
+        curPos = event.globalPos()
 
-        if self.lastPos == [curX, curY]:
+        if self.lastPos == curPos:
             return
 
-        deltaX = curX - self.lastPos[0]
-        deltaY = self.lastPos[1] - curY 
-        self.lastPos = [curX, curY]
+        deltaX = curPos.x() - self.lastPos.x()
+        deltaY = self.lastPos.y() - curPos.y()
+        self.lastPos = curPos
 
-        sensitivity = 0.05
-        deltaX *= sensitivity
-        deltaY *= sensitivity
-
-        angle = (deltaY ** 2 + deltaX ** 2) ** 0.5
-        axis = [deltaY, deltaX, 0]
-        self.camera.rotateByAxis(axis, angle)
+        self.camera.rotation(deltaX, deltaY)
 
 
     def wheelEvent(self, event):
@@ -159,7 +151,8 @@ class myGL(QtOpenGL.QGLWidget):
         self.camera.zoom(zoomCoef)
 
 
-    def update(self, color):
+    def update(self, color, transVec):
+        self.camera.continousTranslate(transVec)
         self.color = color
         self.updateGL()
 
