@@ -28,12 +28,17 @@ class Camera(Object):
 
 
     def __updateVectors(self):
+        sinYaw, cosYaw = (glm.sin(glm.radians(self.yaw)),
+                          glm.cos(glm.radians(self.yaw)))
+        sinPitch, cosPitch = (glm.sin(glm.radians(self.pitch)),
+                          glm.cos(glm.radians(self.pitch)))
+        sinRoll, cosRoll = (glm.sin(glm.radians(self.roll)),
+                          glm.cos(glm.radians(self.roll)))
+
         newFront = glm.vec3()
-        newFront.x = (glm.cos(glm.radians(self.yaw))
-                         * glm.cos(glm.radians(self.pitch)))
-        newFront.y = glm.sin(glm.radians(self.pitch)) 
-        newFront.z = (glm.sin(glm.radians(self.yaw))
-                         * glm.cos(glm.radians(self.pitch)))
+        newFront.x = cosYaw * cosPitch
+        newFront.y = sinPitch
+        newFront.z = sinYaw * cosPitch
 
         self.front = glm.normalize(newFront)
         self.right = glm.normalize(glm.cross(self.front, self.worldUp))
@@ -58,21 +63,20 @@ class Camera(Object):
 
 
     def rotateX(self, angle):
-        super().rotateX(angle)
+        self.pitch += angle
+        self.__updateVectors()
 
 
     def rotateY(self, angle):
-        super().rotateY(angle)
+        self.yaw += angle
+        self.__updateVectors()
 
 
     def rotateZ(self, angle):
-        super().rotateZ(angle)
+        self.roll += angle
+        self.__updateVectors()
 
 
-    def rotateByAxis(self, axis, angle):
-        super().rotateByAxis(axis, angle)
-
-    
     def changePerspective(self, angle=45, ratio=1, near=0.01, far=100):
         self.angle = angle
         self.ratio = ratio

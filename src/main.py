@@ -13,7 +13,7 @@ from PyQt5.QtGui import QColor
 from graphic.ui_mainwindow import Ui_MainWindow
 
 from widgets.colordialog import MiniColorDialog
-import load
+import load.load as load
 
 ################################################
 
@@ -59,8 +59,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.xRightTurnBtn.clicked.connect(self.xRightRotate)
         self.yUpTurnBtn.clicked.connect(self.yUpRotate)
         self.yDownTurnBtn.clicked.connect(self.yDownRotate)
-        self.zLeftTurnBtn.clicked.connect(self.zLeftRotate)
-        self.zRightTurnBtn.clicked.connect(self.zRightRotate)
 
         self.colorBtn.clicked.connect(self.chooseColor)
 
@@ -129,27 +127,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def xLeftRotate(self):
-        self.GL.rotate((0, 1, 0))
-
-
-    def xRightRotate(self):
         self.GL.rotate((0, -1, 0))
 
 
+    def xRightRotate(self):
+        self.GL.rotate((0, 1, 0))
+
+
     def yUpRotate(self):
-        self.GL.rotate((1, 0, 0))
-
-
-    def yDownRotate(self):
         self.GL.rotate((-1, 0, 0))
 
 
-    def zLeftRotate(self):
-        self.GL.rotate((0, 0, 1))
-
-
-    def zRightRotate(self):
-        self.GL.rotate((0, 0, -1))
+    def yDownRotate(self):
+        self.GL.rotate((1, 0, 0))
 
 
     def keyPressEvent(self, event):

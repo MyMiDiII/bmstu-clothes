@@ -24,6 +24,7 @@ class myGL(QtOpenGL.QGLWidget):
         self.camMode = False
         self.setMouseTracking(self.camMode)
         self.cursor = QCursor()
+        self.cursorShapes = [Qt.ArrowCursor, Qt.BlankCursor]
 
         self.color = (255, 255, 255, 1.0)
         self.angle = 0
@@ -121,10 +122,11 @@ class myGL(QtOpenGL.QGLWidget):
                               selfPos.y() + self.height() // 2
                        )
         self.cursor.setPos(self.lastPos)
-        self.cursor.setShape(Qt.BlankCursor)
 
         if event.button() == Qt.LeftButton:
             self.camMode = not self.camMode
+            self.cursor.setShape(self.cursorShapes[self.camMode])
+            self.setCursor(self.cursor)
             self.setMouseTracking(self.camMode)
 
         if self.camMode:
@@ -144,6 +146,15 @@ class myGL(QtOpenGL.QGLWidget):
         self.lastPos = curPos
 
         self.camera.rotation(deltaX, deltaY)
+
+
+    def leaveEvent(self, event):
+        if self.camMode:
+            selfPos = self.pos()
+            self.lastPos = QPoint(selfPos.x() + self.width() // 2,
+                                  selfPos.y() + self.height() // 2
+                           )
+            self.cursor.setPos(self.lastPos)
 
 
     def wheelEvent(self, event):
