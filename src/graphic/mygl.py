@@ -13,8 +13,9 @@ import numpy as np
 
 from graphic.shader import Shader
 
-from graphic.objects.object import Object
 from graphic.objects.camera import Camera
+from graphic.objects.mesh import Mesh
+
 
 class myGL(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):
@@ -28,19 +29,8 @@ class myGL(QtOpenGL.QGLWidget):
 
         self.color = (255, 255, 255, 1.0)
         self.angle = 0
-        self.object = Object()
+        self.object = Mesh(10, 10)
         self.camera = Camera()
-
-        # !!! в класс модельки
-        self.vrtxs = np.array(
-        ((-0.5, -0.5, 0),
-         ( 0.5, -0.5, 0),
-         ( 0.5,  0.5, 0),
-         (-0.5,  0.5, 0)
-        ),
-        dtype='float32')
-
-        self.indices = np.array([0, 1, 3, 1, 2, 3], dtype='int32')
 
 
     def initializeGL(self):
@@ -48,13 +38,17 @@ class myGL(QtOpenGL.QGLWidget):
         #print(self.proj)
         self.qglClearColor(QtGui.QColor(50, 50, 50))
         gl.glEnable(gl.GL_DEPTH_TEST)
+        # устанавливаем шейдры
+        self.shader = Shader("shader.vs", "shader.fs")
+        self.shader.use()
+
 
 
     def resizeGL(self, width, height):
         #print("resize")
         gl.glViewport(0, 0, width, height)
         self.camera.changePerspective(ratio=width/height)
-        self.camera.setPosition([0, 0, 3])
+        self.camera.setPosition([0, 0, 10])
 
 
     def paintGL(self):
@@ -71,34 +65,32 @@ class myGL(QtOpenGL.QGLWidget):
         # копируем массив вершин в вершинный буфер
         VBO = gl.glGenBuffers(1)
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, VBO)
-        gl.glBufferData(gl.GL_ARRAY_BUFFER, self.vrtxs, gl.GL_STATIC_DRAW)
+        gl.glBufferData(gl.GL_ARRAY_BUFFER, self.object.getVertexes(),
+                        gl.GL_STATIC_DRAW)
 
         # копируем индексный массив в элементный буфер
         EBO = gl.glGenBuffers(1)
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, EBO)
-        gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER,
-                self.indices, gl.GL_STATIC_DRAW)
+        gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, self.object.getIndices(),
+                gl.GL_STATIC_DRAW)
 
         # устанавливаем указатели вершинных атрибутов
         gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, False, 0, None)
         gl.glEnableVertexAttribArray(0)
 
-        # устанавливаем шейдры
-        shader = Shader("shader.vs", "shader.fs")
-        shader.use()
-
         # преобразование
-        shader.setMat4("perspective", self.camera.getProjMatrix())
-        shader.setMat4("view", self.camera.getVeiwMatrix())
-        shader.setMat4("model", self.object.getModelMatrix())
+        self.shader.setMat4("perspective", self.camera.getProjMatrix())
+        self.shader.setMat4("view", self.camera.getVeiwMatrix())
+        self.shader.setMat4("model", self.object.getModelMatrix())
 
         # устанавливаем цвет
-        shader.setVec4("curColor", *self.color)
+        self.shader.setVec4("curColor", *self.color)
 
         # рисуем
         gl.glBindVertexArray(VAO)
-        gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
-        #gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        gl.glDrawElements(gl.GL_TRIANGLES, self.object.getIndices().size,
+                          gl.GL_UNSIGNED_INT, None)
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         #print("PAINT END!")
 
 
@@ -162,8 +154,9 @@ class myGL(QtOpenGL.QGLWidget):
         self.camera.zoom(zoomCoef)
 
 
-    def update(self, color, transVec):
+    def update(self, dt, color, transVec):
         self.camera.continousTranslate(transVec)
         self.color = color
+        self.object.update(dt)
         self.updateGL()
 

@@ -63,7 +63,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.colorBtn.clicked.connect(self.chooseColor)
 
         timer = QtCore.QTimer(self)
-        timer.setInterval(50)
+        self.dt = 50
+        timer.setInterval(self.dt)
         timer.timeout.connect(self.timerActions)
         timer.start()
 
@@ -91,7 +92,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 BACKGROUNDSTRING % self.curColor.name()
             )
 
-        self.GL.update(self.curColor.getRgbF(), self.translateVec)
+        self.GL.update(self.dt / 1000, self.curColor.getRgbF(),
+                self.translateVec)
 
 
     def scalePlus(self):
