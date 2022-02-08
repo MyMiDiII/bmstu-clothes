@@ -29,7 +29,8 @@ class myGL(QtOpenGL.QGLWidget):
 
         self.color = (255, 255, 255, 1.0)
         self.angle = 0
-        self.object = Mesh(10, 10)
+        self.object = Mesh(11, 11)
+        self.object.translate(-5, -5, 0)
         self.camera = Camera()
 
 
@@ -48,7 +49,7 @@ class myGL(QtOpenGL.QGLWidget):
         #print("resize")
         gl.glViewport(0, 0, width, height)
         self.camera.changePerspective(ratio=width/height)
-        self.camera.setPosition([0, 0, 10])
+        self.camera.setPosition([0, 0, 20])
 
 
     def paintGL(self):

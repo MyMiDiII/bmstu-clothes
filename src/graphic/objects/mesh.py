@@ -3,6 +3,7 @@ import numpy as np
 
 from graphic.objects.object import Object
 from clothes.mass import Mass
+from clothes.spring import Spring
 
 
 class Mesh(Object):
@@ -12,11 +13,45 @@ class Mesh(Object):
         self.masses = []
         for i in range(m):
             for j in range(n):
-                self.masses.append(Mass(1, (i, j, 0)))
+                self.masses.append(Mass(10, (i, j, 0),
+                    j == n - 1 and (not i or i == m - 1)))
 
         for i in range(m):
             for j in range(n):
-                self.masses.append(Mass(1, (i, j, 5)))
+                if i != 0:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[(i - 1) * n + j],
+                            1,
+                            10
+                            )
+
+                if i != m - 1:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[(i + 1) * n + j],
+                            1,
+                            10
+                            )
+
+                if j != 0:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[i * n + j - 1],
+                            1,
+                            10
+                            )
+
+                if j != n - 1:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[i * n + j + 1],
+                            1,
+                            10
+                            )
+
+        for mass in self.masses:
+            print(len(mass.springs))
+
+        #for i in range(m):
+        #    for j in range(n):
+        #        self.masses.append(Mass(1, (i, j, 5)))
        # self.masses = [
        #         Mass(1, (-0.5, -0.5, 0)),
        #         Mass(1, ( 0.5, -0.5, 0)),
@@ -31,11 +66,11 @@ class Mesh(Object):
                 self.indices.extend([curInd, curInd + 1, curInd + n])
                 self.indices.extend([curInd + n + 1, curInd + 1, curInd + n])
 
-        for i in range(m - 1):
-            for j in range(n - 1):
-                curInd = n * m + i * n + j 
-                self.indices.extend([curInd, curInd + 1, curInd + n])
-                self.indices.extend([curInd + n + 1, curInd + 1, curInd + n])
+        #for i in range(m - 1):
+        #    for j in range(n - 1):
+        #        curInd = n * m + i * n + j 
+        #        self.indices.extend([curInd, curInd + 1, curInd + n])
+        #        self.indices.extend([curInd + n + 1, curInd + 1, curInd + n])
 
         self.indices = np.array(self.indices, dtype='int32')
 
