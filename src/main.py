@@ -63,7 +63,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.colorBtn.clicked.connect(self.chooseColor)
 
         timer = QtCore.QTimer(self)
-        self.dt = 50
+        self.dt = 2
         timer.setInterval(self.dt)
         timer.timeout.connect(self.timerActions)
         timer.start()
@@ -105,27 +105,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def moveUp(self):
-        self.GL.translate((0, 0.05, 0))
+        self.GL.translate((0, 0.5, 0))
 
 
     def moveDown(self):
-        self.GL.translate((0, -0.05, 0))
+        self.GL.translate((0, -0.5, 0))
 
 
     def moveRight(self):
-        self.GL.translate((0.05, 0, 0))
+        self.GL.translate((0.5, 0, 0))
 
 
     def moveLeft(self):
-        self.GL.translate((-0.05, 0, 0))
+        self.GL.translate((-0.5, 0, 0))
 
 
     def moveFrom(self):
-        self.GL.translate((0, 0, -0.05))
+        self.GL.translate((0, 0, -0.5))
 
 
     def moveTo(self):
-        self.GL.translate((0, 0, 0.05))
+        self.GL.translate((0, 0, 0.5))
 
 
     def xLeftRotate(self):

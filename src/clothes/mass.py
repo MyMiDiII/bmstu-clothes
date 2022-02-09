@@ -31,13 +31,13 @@ class Mass:
         if self.pinned:
             return glm.vec3()
 
-        gravity = self.mass * glm.vec3(0, -1, 0)
+        gravity = self.mass * glm.vec3(0, -20, 0)
 
         internal = glm.vec3()
         for spring in self.springs:
             internal += spring.getForce()
 
-        damping = -100 * self.vel  
+        damping = -0.5 * self.vel
 
         return gravity + internal + damping
 

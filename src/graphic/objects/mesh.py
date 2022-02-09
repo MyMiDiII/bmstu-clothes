@@ -10,44 +10,105 @@ class Mesh(Object):
     def __init__(self, m, n):
         super().__init__()
 
+        k = 50
+        len0 = 0.5
+
         self.masses = []
         for i in range(m):
             for j in range(n):
-                self.masses.append(Mass(10, (i, j, 0),
-                    j == n - 1 and (not i or i == m - 1)))
+                self.masses.append(Mass(0.1, (i / 2, 0, j / 2),
+                        j == n - 1 and (not i or i == m - 1)))
 
         for i in range(m):
             for j in range(n):
-                if i != 0:
+                if i:
                     self.masses[i * n + j].addSpring(
                             self.masses[(i - 1) * n + j],
-                            1,
-                            10
+                            0.9 * len0,
+                            k
                             )
 
                 if i != m - 1:
                     self.masses[i * n + j].addSpring(
                             self.masses[(i + 1) * n + j],
-                            1,
-                            10
+                            0.9 * len0,
+                            k
                             )
 
-                if j != 0:
+                if j:
                     self.masses[i * n + j].addSpring(
                             self.masses[i * n + j - 1],
-                            1,
-                            10
+                            0.9 * len0,
+                            k
                             )
 
                 if j != n - 1:
                     self.masses[i * n + j].addSpring(
                             self.masses[i * n + j + 1],
-                            1,
-                            10
+                            0.9 * len0,
+                            k
                             )
 
-        for mass in self.masses:
-            print(len(mass.springs))
+                if i and j:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[(i - 1) * n + j - 1],
+                            0.9 * len0 * 2 ** 0.5,
+                            k
+                            )
+
+                if i and j != n - 1:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[(i - 1) * n + j + 1],
+                            0.9 * len0 * 2 ** 0.5,
+                            k
+                            )
+
+                if i != m - 1 and j:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[(i + 1) * n + j - 1],
+                            0.9 * len0 * 2 ** 0.5,
+                            k
+                            )
+
+                if i != m - 1 and j != n - 1:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[(i + 1) * n + j + 1],
+                            0.9 * len0 * 2 ** 0.5,
+                            k
+                            )
+
+                if i > 1:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[(i - 2) * n + j],
+                            0.9 * len0 * 1.9,
+                            k
+                            )
+
+                if i < m - 2:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[(i + 2) * n + j],
+                            0.9 * len0 * 1.9,
+                            k
+                            )
+
+                if j > 1:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[i * n + j - 2],
+                            0.9 * len0 * 1.9,
+                            k
+                            )
+
+                if j < n - 2:
+                    self.masses[i * n + j].addSpring(
+                            self.masses[i * n + j + 2],
+                            0.9 * len0 * 1.9,
+                            k
+                            )
+
+        for i in range(m):
+            for j in range(n):
+                print(len(self.masses[i * n + j].springs))
+
 
         #for i in range(m):
         #    for j in range(n):
