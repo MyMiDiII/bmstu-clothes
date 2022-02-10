@@ -87,12 +87,8 @@ class Camera(Object):
     def continousTranslate(self, directions):
         self.position += self.speed * self.front * directions["w"]
         self.position -= self.speed * self.front * directions["s"]
-        self.position += (self.speed
-                          * glm.normalize(glm.cross(self.position, self.up))
-                          * directions["a"])
-        self.position -= (self.speed
-                          * glm.normalize(glm.cross(self.position, self.up))
-                          * directions["d"])
+        self.position -= self.speed * self.right * directions["a"]
+        self.position += self.speed * self.right * directions["d"]
 
 
     def rotation(self, deltaX, deltaY):
