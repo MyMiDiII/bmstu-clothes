@@ -1,10 +1,14 @@
 #version 330 core
 
+uniform float ambientCoef;
+uniform vec4 lightColor;
 uniform vec4 curColor;
 
 out vec4 FragColor;
 
 void main()
 {
-   FragColor = curColor; 
+    vec3 ambient = ambientCoef * vec3(lightColor);
+
+    FragColor = vec4(ambient * vec3(curColor), 0.1);
 }

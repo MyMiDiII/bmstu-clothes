@@ -83,3 +83,9 @@ class Shader:
             gl.glUniform4fv(location, 1, *values)
         elif (len(values) == 4):
             gl.glUniform4f(location, *values)
+
+
+    def setFloat(self, name, value):
+        location = gl.glGetUniformLocation(self.programID, name)
+        gl.glUniform1f(location, value)
+

@@ -14,7 +14,9 @@ import numpy as np
 from graphic.shader import Shader
 
 from graphic.objects.camera import Camera
-from graphic.objects.mesh import Mesh
+from clothes.massspringsystem import MassSpringModel
+
+import graphic.config as cfg
 
 
 class myGL(QtOpenGL.QGLWidget):
@@ -29,7 +31,7 @@ class myGL(QtOpenGL.QGLWidget):
 
         self.color = (255, 255, 255, 1.0)
         self.angle = 0
-        self.object = Mesh(11, 11)
+        self.object = MassSpringModel(11, 11)
         self.object.translate(-5, 0, -5)
         self.camera = Camera()
 
@@ -39,6 +41,7 @@ class myGL(QtOpenGL.QGLWidget):
         #print(self.proj)
         self.qglClearColor(QtGui.QColor(50, 50, 50))
         gl.glEnable(gl.GL_DEPTH_TEST)
+
         # устанавливаем шейдры
         self.shader = Shader("shader.vs", "shader.fs")
         self.shader.use()
@@ -86,6 +89,8 @@ class myGL(QtOpenGL.QGLWidget):
 
         # устанавливаем цвет
         self.shader.setVec4("curColor", *self.color)
+        self.shader.setVec4("lightColor", *cfg.LIGHT_COLOR)
+        self.shader.setFloat("ambientCoef", cfg.AMBIENT)
 
         # рисуем
         gl.glBindVertexArray(VAO)

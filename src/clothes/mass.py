@@ -27,17 +27,17 @@ class Mass:
         return mass.getRadiusVector() - self.getRadiusVector()
 
 
-    def getForce(self):
+    def getForce(self, gravCoef, dampCoef):
         if self.pinned:
             return glm.vec3()
 
-        gravity = self.mass * glm.vec3(0, -20, 0)
+        gravity = self.mass * glm.vec3(0, -gravCoef, 0)
 
         internal = glm.vec3()
         for spring in self.springs:
             internal += spring.getForce()
 
-        damping = -0.5 * self.vel
+        damping = -dampCoef * self.vel
 
         return gravity + internal + damping
 
@@ -46,7 +46,7 @@ class Mass:
         self.springs.append(Spring(self, massTo, len0, k))
 
 
-    def updateState(self, dt):
-        self.acc = self.getForce() / self.mass
+    def updateState(self, dt, gravity, damping):
+        self.acc = self.getForce(gravity, damping) / self.mass
         self.vel = self.vel + dt * self.acc
         self.pos = self.pos + dt * self.vel

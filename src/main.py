@@ -63,7 +63,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.colorBtn.clicked.connect(self.chooseColor)
 
         timer = QtCore.QTimer(self)
-        self.dt = 2
+        self.dt = 5
         timer.setInterval(self.dt)
         timer.timeout.connect(self.timerActions)
         timer.start()
