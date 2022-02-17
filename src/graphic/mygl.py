@@ -7,7 +7,6 @@ from OpenGL import GLU
 
 from PyQt5.QtCore import Qt, QPoint
 from OpenGL.arrays import vbo
-import glm
 import glfw
 import numpy as np
 
@@ -29,7 +28,7 @@ class myGL(QtOpenGL.QGLWidget):
         self.cursor = QCursor()
         self.cursorShapes = [Qt.ArrowCursor, Qt.BlankCursor]
 
-        self.color = (255, 255, 255, 1.0)
+        self.color = (1, 1, 1, 1.0)
         self.angle = 0
         self.object = MassSpringModel(11, 11)
         self.object.translate(-5, 0, -5)

@@ -9,8 +9,16 @@ class Spring:
         self.k        = k
 
 
+    def getVector(self):
+        return self.massFrom.getDistance(self.massTo)
+
+
+    def getLength(self):
+        return glm.length(self.getVector())
+
+
     def getForce(self):
-        curLen = self.massFrom.getDistance(self.massTo)
+        curLen = self.getVector()
         vecLen0 = curLen / glm.length(curLen) * self.len0
 
         return self.k * (curLen - vecLen0)

@@ -10,5 +10,5 @@ void main()
 {
     vec3 ambient = ambientCoef * vec3(lightColor);
 
-    FragColor = vec4(ambient * vec3(curColor), 0.1);
+    FragColor = vec4(ambient * vec3(curColor), lightColor.w * curColor.w);
 }

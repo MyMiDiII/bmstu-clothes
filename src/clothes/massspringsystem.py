@@ -11,7 +11,7 @@ class MassSpringModel(Object):
         super().__init__()
 
         self.gravity = 9.81
-        self.mass = 10
+        self.mass = 0.1
         self.stiffness = 25
         self.damping = 0.5
         len0 = 0.5
@@ -19,7 +19,7 @@ class MassSpringModel(Object):
         self.masses = []
         for i in range(m):
             for j in range(n):
-                self.masses.append(Mass(0.1, (i / 2, 0, j / 2),
+                self.masses.append(Mass(self.mass, (i / 2, 0, j / 2),
                         j == n - 1 and (not i or i == m - 1)))
 
         for i in range(m):
@@ -139,13 +139,20 @@ class MassSpringModel(Object):
         self.indices = np.array(self.indices, dtype='int32')
 
 
+
+
+
     def update(self, dt):
         for mass in self.masses:
             mass.updateState(dt, self.gravity, self.damping)
 
+        #self.__keepStable()
+
+
     def getVertexes(self):
         return np.array([mass.getPosition() for mass in self.masses],
                         dtype='float32')
+
 
     def getIndices(self):
         return self.indices
