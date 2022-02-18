@@ -30,8 +30,8 @@ class myGL(QtOpenGL.QGLWidget):
 
         self.color = (1, 1, 1, 1.0)
         self.angle = 0
-        self.object = MassSpringModel(11, 11)
-        self.object.translate(-5, 0, -5)
+        self.object = MassSpringModel(22, 22)
+        self.object.translate(-5.25, 0, -5.25)
         self.camera = Camera()
 
 
@@ -95,7 +95,7 @@ class myGL(QtOpenGL.QGLWidget):
         gl.glBindVertexArray(VAO)
         gl.glDrawElements(gl.GL_TRIANGLES, self.object.getIndices().size,
                           gl.GL_UNSIGNED_INT, None)
-        #gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         #print("PAINT END!")
 
 
@@ -112,7 +112,7 @@ class myGL(QtOpenGL.QGLWidget):
         self.camera.rotateY(vec[1])
         self.camera.rotateZ(vec[2])
 
-    
+
     def mousePressEvent(self, event):
         selfPos = self.pos()
         self.lastPos = QPoint(selfPos.x() + self.width() // 2,
@@ -148,9 +148,10 @@ class myGL(QtOpenGL.QGLWidget):
     def leaveEvent(self, event):
         if self.camMode:
             selfPos = self.pos()
-            self.lastPos = QPoint(selfPos.x() + self.width() // 2,
-                                  selfPos.y() + self.height() // 2
+            self.lastPos = QPoint(self.parent.pos().x() + selfPos.x() + self.width() // 2,
+                                  self.parent.pos().y() + selfPos.y() + self.height() // 2
                            )
+            print(self.parent.pos().x(), self.parent.pos().y())
             self.cursor.setPos(self.lastPos)
 
 
