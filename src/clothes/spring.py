@@ -42,7 +42,7 @@ class Spring:
         tau = (curLen - self.len0) / self.len0
 
 
-        while tau > 0.01:
+        while tau > 0.02:
             #print("len0", self.len0)
             #print("mF", self.massFrom.getPos())
             #print("mT", self.massTo.getPos())

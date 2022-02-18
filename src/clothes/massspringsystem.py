@@ -277,8 +277,8 @@ class MassSpringModel(Object):
         for i in range(m - 1):
             for j in range(n - 1):
                 curInd = i * n + j 
-                self.indices.extend([curInd, curInd + 1, curInd + n])
-                self.indices.extend([curInd + n + 1, curInd + 1, curInd + n])
+                self.indices.extend([curInd, curInd + 1, curInd + n + 1])
+                self.indices.extend([curInd, curInd + n, curInd + n + 1])
 
         #for i in range(m - 1):
         #    for j in range(n - 1):
