@@ -77,7 +77,7 @@ class MassSpringModel(Object):
                 if j < n - 2:
                     self.masses[i * n + j].addSpring(
                             self.masses[i * n + j + 2],
-                            5 * self.len0 * 2,
+                            0.9 * self.len0 * 2,
                             self.stiffness,
                             2
                             )

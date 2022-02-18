@@ -30,8 +30,8 @@ class myGL(QtOpenGL.QGLWidget):
 
         self.color = (1, 1, 1, 1.0)
         self.angle = 0
-        self.object = MassSpringModel(22, 22)
-        self.object.translate(-5.25, 0, -5.25)
+        self.object = MassSpringModel(14, 14)
+        self.object.translate(-3.5, 0, -3.5)
         self.camera = Camera()
 
 
@@ -95,7 +95,7 @@ class myGL(QtOpenGL.QGLWidget):
         gl.glBindVertexArray(VAO)
         gl.glDrawElements(gl.GL_TRIANGLES, self.object.getIndices().size,
                           gl.GL_UNSIGNED_INT, None)
-        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        #gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         #print("PAINT END!")
 
 
