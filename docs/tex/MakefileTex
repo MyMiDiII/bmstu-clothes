@@ -4,7 +4,7 @@ texReport : build move
 
 build : report.tex
 	pdflatex report.tex
-	bibtex report
+	#bibtex report
 	pdflatex report.tex
 	pdflatex report.tex
 
