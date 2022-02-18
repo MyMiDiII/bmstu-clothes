@@ -21,7 +21,7 @@ class Camera(Object):
         self.roll = 0.0
 
         self.worldUp = glm.vec3(0, 1, 0)
-        self.speed = 0.04
+        self.speed = 0.01
         self.sensitivity = 0.05
 
         self.__updateVectors()

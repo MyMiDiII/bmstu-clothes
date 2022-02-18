@@ -77,3 +77,6 @@ class Mass:
         self.vel = self.vel + dt * self.acc
         self.pos = self.pos + dt * self.vel
 
+        #if self.pos.y < 0:
+        #    self.pos = glm.vec3(self.pos.x, 0, self.pos.z)
+

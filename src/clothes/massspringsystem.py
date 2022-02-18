@@ -1,5 +1,6 @@
 import OpenGL.GL as gl
 import numpy as np
+from random import uniform
 
 from graphic.objects.object import Object
 from clothes.mass import Mass
@@ -13,17 +14,20 @@ class MassSpringModel(Object):
         self.timer = 0
 
         self.gravity = 9.81
-        self.mass = 0.1
+        self.mass = 0.01
         self.stiffness = 1
         self.damping = 1
-        self.len0 = 0.5
+        self.len0 = 0.05
+
+        self.damp = 0.8
 
         self.masses = []
         self.springs = []
 
         for i in range(m):
             for j in range(n):
-                self.masses.append(Mass(self.mass, (i / 2, 0, j / 2),
+                self.masses.append(Mass(self.mass, (i * self.len0, j * self.len0, uniform(-1 /
+                    100, 1 / 100)),
                         j == n - 1 and (not i or i == m - 1)))
 
         for i in range(m):
@@ -68,7 +72,7 @@ class MassSpringModel(Object):
                 if i < m - 2:
                     self.masses[i * n + j].addSpring(
                             self.masses[(i + 2) * n + j],
-                            0.9 * self.len0 * 2,
+                            self.damp * self.len0 * 2,
                             self.stiffness,
                             2
                             )
@@ -77,7 +81,7 @@ class MassSpringModel(Object):
                 if j < n - 2:
                     self.masses[i * n + j].addSpring(
                             self.masses[i * n + j + 2],
-                            0.9 * self.len0 * 2,
+                            self.damp * self.len0 * 2,
                             self.stiffness,
                             2
                             )
@@ -117,7 +121,7 @@ class MassSpringModel(Object):
                 if i > 1:
                     self.masses[i * n + j].addSpring(
                             self.masses[(i - 2) * n + j],
-                            0.9 * self.len0 * 2,
+                            self.damp * self.len0 * 2,
                             self.stiffness,
                             2
                             )
@@ -125,7 +129,7 @@ class MassSpringModel(Object):
                 if j > 1:
                     self.masses[i * n + j].addSpring(
                             self.masses[i * n + j - 2],
-                            0.9 * self.len0 * 2,
+                            self.damp * self.len0 * 2,
                             self.stiffness,
                             2
                            )
@@ -136,7 +140,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex - n],
-                #                    0.9 * self.len0,
+                #                    self.damp * self.len0,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
@@ -146,7 +150,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex + n],
-                #                    0.9 * self.len0,
+                #                    self.damp * self.len0,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
@@ -156,7 +160,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex - 1],
-                #                    0.9 * self.len0,
+                #                    self.damp * self.len0,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
@@ -166,7 +170,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex + 1],
-                #                    0.9 * self.len0,
+                #                    self.damp * self.len0,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
@@ -176,7 +180,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex - n - 1],
-                #                    0.9 * self.len0 * 2 ** 0.5,
+                #                    self.damp * self.len0 * 2 ** 0.5,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
@@ -186,7 +190,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex - n + 1],
-                #                    0.9 * self.len0 * 2 ** 0.5,
+                #                    self.damp * self.len0 * 2 ** 0.5,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
@@ -196,7 +200,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex + n - 1],
-                #                    0.9 * self.len0 * 2 ** 0.5,
+                #                    self.damp * self.len0 * 2 ** 0.5,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
@@ -206,7 +210,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex + n + 1],
-                #                    0.9 * self.len0 * 2 ** 0.5,
+                #                    self.damp * self.len0 * 2 ** 0.5,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
@@ -216,7 +220,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex - 2 * n],
-                #                    0.9 * self.len0 * 2,
+                #                    self.damp * self.len0 * 2,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
@@ -226,7 +230,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex + 2 * n],
-                #                    0.9 * self.len0 * 2,
+                #                    self.damp * self.len0 * 2,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
@@ -236,7 +240,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex - 2],
-                #                    0.9 * self.len0 * 2,
+                #                    self.damp * self.len0 * 2,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
@@ -246,7 +250,7 @@ class MassSpringModel(Object):
                 #    curSpring = Spring(
                 #                    self.masses[curIndex],
                 #                    self.masses[curIndex + 2],
-                #                    0.9 * self.len0 * 2,
+                #                    self.damp * self.len0 * 2,
                 #                    self.stiffness
                 #                )
                 #    self.masses[curIndex].addSpring(curSpring)
