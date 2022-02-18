@@ -14,6 +14,7 @@ from graphic.shader import Shader
 
 from graphic.objects.camera import Camera
 from clothes.massspringsystem import MassSpringModel
+from clothes.pattern import TShirt
 
 import graphic.config as cfg
 
@@ -30,7 +31,8 @@ class myGL(QtOpenGL.QGLWidget):
 
         self.color = (1, 1, 1, 1.0)
         self.angle = 0
-        self.object = MassSpringModel(30, 30)
+        self.tshirt = TShirt()
+        self.object = MassSpringModel(self.tshirt)
         self.object.translate(-0.75, -0.75, 0)
         self.camera = Camera()
 

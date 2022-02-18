@@ -37,12 +37,15 @@ class Spring:
 
 
     def stabilize(self):
-        #print("STABILIZE")
+        # print("STABILIZE")
+        if self.massFrom.isPinned() and self.massTo.isPinned():
+            return
+
         curLen = self.getLen()
         tau = (curLen - self.len0) / self.len0
 
 
-        while tau > 0.02:
+        while tau > 0.01:
             #print("len0", self.len0)
             #print("mF", self.massFrom.getPos())
             #print("mT", self.massTo.getPos())
