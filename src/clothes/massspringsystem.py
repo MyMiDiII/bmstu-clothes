@@ -17,7 +17,7 @@ class MassSpringModel(Object):
 
         self.timer = 0
 
-        self.gravity = 4
+        self.gravity = 9.81
         self.mass = 0.01
         self.stiffness = 2
         self.damping = 0.2
@@ -105,7 +105,7 @@ class MassSpringModel(Object):
         indexes = [
                 grid[i - 2][j],
                 grid[i][j - 2],
-                grid[i][j - 2],
+                grid[i][j + 2],
                 grid[i + 2][j]
             ]
 
