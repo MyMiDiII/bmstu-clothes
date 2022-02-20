@@ -73,12 +73,14 @@ class myGL(QtOpenGL.QGLWidget):
         # копируем массив вершин в вершинный буфер
         VBO = gl.glGenBuffers(1)
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, VBO)
+        #print("vrx size", self.object.getVertexes().size)
         gl.glBufferData(gl.GL_ARRAY_BUFFER, self.object.getVertexes(),
                         gl.GL_STATIC_DRAW)
 
         # копируем индексный массив в элементный буфер
         EBO = gl.glGenBuffers(1)
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, EBO)
+        #print("ind size", self.object.getIndices().size)
         gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, self.object.getIndices(),
                 gl.GL_STATIC_DRAW)
 
@@ -105,12 +107,14 @@ class myGL(QtOpenGL.QGLWidget):
         self.shader.setVec3("lightColor", *cfg.LIGHT_COLOR)
         self.shader.setFloat("ambientCoef", cfg.AMBIENT)
         self.shader.setVec3("lightPos", *self.camera.getPosition())
+        #self.shader.setVec3("lightPos", *cfg.LIGHT_POS)
 
         # рисуем
         gl.glBindVertexArray(VAO)
         gl.glDrawElements(gl.GL_TRIANGLES, self.object.getIndices().size,
                           gl.GL_UNSIGNED_INT, None)
         #gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        gl.glLightModelf(gl.GL_LIGHT_MODEL_TWO_SIDE, gl.GL_TRUE)
         #print("PAINT END!")
 
 

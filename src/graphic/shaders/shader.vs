@@ -14,6 +14,6 @@ void main()
 {
     gl_Position = perspective * view * model * vec4(vrtx, 1.0f);
     fragPos = vec3(model * vec4(vrtx, 1.0f));
-    normal = vrtxNormal;
+    normal = mat3(transpose(inverse(model))) * vrtxNormal;
 }
 

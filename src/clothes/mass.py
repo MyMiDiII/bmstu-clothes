@@ -52,6 +52,10 @@ class Mass:
         return [self.normal.x, self.normal.y, self.normal.z]
 
 
+    def getNegNormal(self):
+        return [-self.normal.x, -self.normal.y, -self.normal.z]
+
+
     def getDistance(self, mass):
        # print(mass)
        # print("mass", mass.getRadiusVector())
@@ -103,16 +107,25 @@ class Mass:
     def __getOneSideNormal(self, mass1, mass2):
         vec1 = mass1.getPos() - self.pos
         vec2 = mass2.getPos() - self.pos
-        return glm.normalize(glm.cross(vec1, vec2))
+        crossProd = glm.cross(vec1, vec2)
+        norm = glm.length(crossProd)
+        #crossProd = crossProd if norm > 1e-3 else glm.vec3()
+
+        return glm.normalize(crossProd)
 
 
     def updateNormal(self):
         self.normal = glm.vec3()
-        normalSprings = [sp for sp in self.springs if sp.getOrderInd() != 100]
+        normalSprings = [sp for sp in self.springs if sp.getOrderInd() not in
+                [100]]
+        #normalSprings = normalSprings[:3]
 
         for i, sp in enumerate(normalSprings):
             self.normal += self.__getOneSideNormal(
-                    normalSprings[i - 1].getMassTo(),
-                    sp.getMassTo()
+                    sp.getMassTo(),
+                    normalSprings[i - 1].getMassTo()
                     )
+
+        self.normal /= len(normalSprings)
+        self.normal = glm.normalize(self.normal)
 
