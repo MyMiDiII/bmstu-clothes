@@ -85,6 +85,15 @@ class Shader:
             gl.glUniform4f(location, *values)
 
 
+    def setVec3(self, name, *values):
+        location = gl.glGetUniformLocation(self.programID, name)
+
+        if len(values) == 1 and type(values[0]) == glm.vec3:
+            gl.glUniform3fv(location, 1, *values)
+        elif (len(values) == 3):
+            gl.glUniform3f(location, *values)
+
+
     def setFloat(self, name, value):
         location = gl.glGetUniformLocation(self.programID, name)
         gl.glUniform1f(location, value)

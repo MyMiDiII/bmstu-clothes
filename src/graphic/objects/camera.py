@@ -45,6 +45,10 @@ class Camera(Object):
         self.up = glm.normalize(glm.cross(self.right, self.front))
 
 
+    def getPosition(self):
+        return [self.position.x, self.position.y, self.position.z]
+
+
     def getProjMatrix(self):
         return glm.perspective(glm.radians(self.angle), self.ratio, self.near,
                 self.far)

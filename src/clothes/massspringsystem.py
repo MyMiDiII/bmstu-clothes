@@ -1,4 +1,5 @@
 import OpenGL.GL as gl
+import glm
 import numpy as np
 from random import uniform
 
@@ -19,8 +20,10 @@ class MassSpringModel(Object):
 
         self.gravity = 9.81
         self.mass = 0.01
-        self.stiffness = 2
-        self.damping = 0.2
+        self.structStiff = 0.5
+        self.shearStiff = 2
+        self.bendStiff = 5
+        self.damping = 0.1
         self.len0 = 0.05
 
         self.damp = 0.9
@@ -71,14 +74,17 @@ class MassSpringModel(Object):
                 grid[i + 1][j]
             ]
 
+        orderInd = 2
         for nearInd in indexes:
             if nearInd:
                 self.masses[ind - 1].addSpring(
                         self.masses[nearInd - 1],
                         self.len0,
-                        self.stiffness,
-                        0
+                        self.structStiff,
+                        0,
+                        orderInd
                         )
+            orderInd += 2
 
 
     def addShearSprings(self, grid, i, j):
@@ -90,14 +96,17 @@ class MassSpringModel(Object):
                 grid[i + 1][j + 1]
             ]
 
+        orderInd = 1
         for nearInd in indexes:
             if nearInd:
                 self.masses[ind - 1].addSpring(
                         self.masses[nearInd - 1],
                         DIAG_COEF * self.len0,
-                        self.stiffness,
-                        1
+                        self.shearStiff,
+                        1,
+                        orderInd
                         )
+            orderInd += 2
 
 
     def addBendingSprings(self, grid, i, j):
@@ -114,8 +123,9 @@ class MassSpringModel(Object):
                 self.masses[ind - 1].addSpring(
                         self.masses[nearInd - 1],
                         2 * self.damp * self.len0,
-                        self.stiffness,
-                        2
+                        self.bendStiff,
+                        2,
+                        100
                         )
 
 
@@ -123,9 +133,11 @@ class MassSpringModel(Object):
         self.masses.append(
             Mass(
                 self.mass,
-                (z + j * self.len0, -i * self.len0, uniform(-ZSTEP, ZSTEP)),
+                (z + j * self.len0, uniform(-ZSTEP, ZSTEP), -i * self.len0,),
                 i == 2
-                )
+                #(j * self.len0, 0, -i * self.len0),
+                #(i == 2 and j == 2 or i == 2 and j == 6)
+            )
             )
 
 
@@ -155,7 +167,7 @@ class MassSpringModel(Object):
 
 
     def __keepStable(self):
-        for mass in self.masses:
+        for mass in reversed(self.masses):
             for spring in mass.getSprings():
                 if spring.type != 2:
                     spring.stabilize()
@@ -165,11 +177,16 @@ class MassSpringModel(Object):
         for mass in self.masses:
             mass.updateState(dt, self.gravity, self.damping)
 
-        self.__keepStable()
+        for mass in self.masses:
+            mass.updateNormal()
+
+        for _ in range(2):
+            self.__keepStable()
 
 
     def getVertexes(self):
-        return np.array([mass.getPosition() for mass in self.masses],
+        return np.array([mass.getPosition() + mass.getNormal()
+                         for mass in self.masses],
                         dtype='float32')
 
 

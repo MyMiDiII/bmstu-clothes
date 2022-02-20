@@ -2,12 +2,22 @@ import glm
 
 class Spring:
 
-    def __init__(self, massFrom, massTo, len0, k, springType):
+    def __init__(self, massFrom, massTo, len0, k, springType, index):
         self.massFrom = massFrom
         self.massTo   = massTo
         self.len0     = len0
         self.k        = k
         self.type     = springType
+
+        self.orderIndex = index
+
+
+    def getMassTo(self):
+        return self.massTo
+
+
+    def getOrderInd(self):
+        return self.orderIndex
 
 
     def getMasses(self):

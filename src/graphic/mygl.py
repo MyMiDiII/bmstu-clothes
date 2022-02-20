@@ -3,12 +3,15 @@ from PyQt5 import QtOpenGL
 from PyQt5.QtGui import QMatrix4x4, QCursor
 
 import OpenGL.GL as gl
+import glm
 from OpenGL import GLU
 
 from PyQt5.QtCore import Qt, QPoint
 from OpenGL.arrays import vbo
 import glfw
 import numpy as np
+
+import ctypes
 
 from graphic.shader import Shader
 
@@ -33,7 +36,7 @@ class myGL(QtOpenGL.QGLWidget):
         self.angle = 0
         self.tshirt = TShirt()
         self.object = MassSpringModel(self.tshirt)
-        self.object.translate(-0.75, -0.75, 0)
+        self.object.translate(0, 0, 0)
         self.camera = Camera()
 
 
@@ -80,8 +83,15 @@ class myGL(QtOpenGL.QGLWidget):
                 gl.GL_STATIC_DRAW)
 
         # устанавливаем указатели вершинных атрибутов
-        gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, False, 0, None)
+        gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, False,
+                                     6 * glm.sizeof(glm.float32), None)
         gl.glEnableVertexAttribArray(0)
+
+        gl.glVertexAttribPointer(1, 3, gl.GL_FLOAT, False,
+                                     6 * glm.sizeof(glm.float32),
+                                     ctypes.c_void_p(3 *
+                                                      glm.sizeof(glm.float32)))
+        gl.glEnableVertexAttribArray(1)
 
         # преобразование
         self.shader.setMat4("perspective", self.camera.getProjMatrix())
@@ -90,14 +100,17 @@ class myGL(QtOpenGL.QGLWidget):
 
         # устанавливаем цвет
         self.shader.setVec4("curColor", *self.color)
-        self.shader.setVec4("lightColor", *cfg.LIGHT_COLOR)
+
+        # настройки света
+        self.shader.setVec3("lightColor", *cfg.LIGHT_COLOR)
         self.shader.setFloat("ambientCoef", cfg.AMBIENT)
+        self.shader.setVec3("lightPos", *self.camera.getPosition())
 
         # рисуем
         gl.glBindVertexArray(VAO)
         gl.glDrawElements(gl.GL_TRIANGLES, self.object.getIndices().size,
                           gl.GL_UNSIGNED_INT, None)
-        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        #gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         #print("PAINT END!")
 
 
