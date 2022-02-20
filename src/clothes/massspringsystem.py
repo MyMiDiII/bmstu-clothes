@@ -26,7 +26,7 @@ class MassSpringModel(Object):
         self.damping = 0.1
         self.len0 = 0.05
 
-        self.damp = 0.9
+        self.damp = 0.8
 
         self.masses = []
         self.indices = []

@@ -106,8 +106,9 @@ class myGL(QtOpenGL.QGLWidget):
         # настройки света
         self.shader.setVec3("lightColor", *cfg.LIGHT_COLOR)
         self.shader.setFloat("ambientCoef", cfg.AMBIENT)
-        self.shader.setVec3("lightPos", *self.camera.getPosition())
         #self.shader.setVec3("lightPos", *cfg.LIGHT_POS)
+        self.shader.setVec3("lightPos", *self.camera.getPosition())
+        self.shader.setVec3("viewPos", *self.camera.getPosition())
 
         # рисуем
         gl.glBindVertexArray(VAO)
