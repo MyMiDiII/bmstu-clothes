@@ -48,7 +48,8 @@ class Spring:
 
     def stabilize(self):
         # print("STABILIZE")
-        if self.massFrom.isPinned() and self.massTo.isPinned():
+        if (self.massFrom.isPinned() and self.massTo.isPinned()
+            or abs(self.len0) < 1e-6):
             return
 
         curLen = self.getLen()

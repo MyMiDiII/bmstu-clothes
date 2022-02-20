@@ -12,6 +12,7 @@ class Mass:
         self.springs = []
         self.pinned = isPin
 
+        self.prevPos = glm.vec3(*pos)
         self.pos = glm.vec3(*pos)
         self.vel = glm.vec3()
         self.acc = glm.vec3()
@@ -64,7 +65,7 @@ class Mass:
         return mass.getRadiusVector() - self.getRadiusVector()
 
 
-    def getForce(self, gravCoef, dampCoef):
+    def getForce(self, gravCoef, dampCoef, windCoef):
         if self.pinned:
             return glm.vec3()
 
@@ -76,10 +77,19 @@ class Mass:
 
         damping = -dampCoef * self.vel
 
-        x, y, z, t = self.pos.x, self.pos.y, self.pos.z, self.curTime * 100
-        wind = glm.vec3(0.1 * sin(t), 0, 0.01 *
-                abs(sin(z + t)) + 0.1 * abs(cos(y + t)))
-        #wind = glm.vec3(uniform(0, 0.5), 0, uniform(0, 0.5))
+        x, y, z, t = self.pos.x, self.pos.y, self.pos.z, self.curTime / 1000
+        #wind = (windCoef * glm.dot(self.normal,
+        #       glm.vec3(
+        #            0.1 * sin(5 * t),
+        #            0,
+        #            1.5 * abs(sin(z + 5 * t)) + 0.1 * cos(y + 5 * t))
+        #       - self.vel) * self.normal)
+        wind = glm.vec3()
+        #wind = glm.vec3(
+        #            0.5 * sin(x * y * t),
+        #            - 0.5 * cos(z * t),
+        #            0.5 * sin(cos(5 * x * y * z * t))
+        #            )
 
         return gravity + internal + damping + wind
 
@@ -91,14 +101,17 @@ class Mass:
         #self.springs.append()
 
 
-    def updateState(self, dt, gravity, damping):
+    def updateState(self, dt, gravity, damping, wind):
         if self.isPinned():
             return
 
         self.curTime += dt
-        self.acc = self.getForce(gravity, damping) / self.mass
-        self.vel = self.vel + dt * self.acc
-        self.pos = self.pos + dt * self.vel
+        #self.pos = self.pos + dt * self.vel
+        curPos = self.pos
+        self.acc = self.getForce(gravity, damping, wind) / self.mass
+        self.pos = 2 * self.pos - self.prevPos + self.acc * dt * dt
+        self.vel = (self.pos - curPos) / dt
+        self.prevPos = curPos
 
         #if self.pos.y < 0:
         #    self.pos = glm.vec3(self.pos.x, 0, self.pos.z)
