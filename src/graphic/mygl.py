@@ -40,6 +40,10 @@ class myGL(QtOpenGL.QGLWidget):
         self.object.translate(0, 0, 0)
         self.camera = Camera()
 
+        self.ambient = 0.1
+        self.diffuse = 0.05
+        self.specular = 0.01
+
 
     def initializeGL(self):
         #print("INIT")
@@ -107,8 +111,9 @@ class myGL(QtOpenGL.QGLWidget):
 
         # настройки света
         self.shader.setVec4("light", *cfg.LIGHT_COLOR)
-        self.shader.setFloat("ambientCoef", cfg.AMBIENT)
-        #self.shader.setVec3("lightPos", *cfg.LIGHT_POS)
+        self.shader.setFloat("ambientCoef", self.ambient)
+        self.shader.setFloat("diffuseCoef", self.diffuse)
+        self.shader.setFloat("specularCoef", self.specular)
         self.shader.setVec3("lightPos", *self.camera.getPosition())
         self.shader.setVec3("viewPos", *self.camera.getPosition())
 
@@ -203,3 +208,15 @@ class myGL(QtOpenGL.QGLWidget):
     def switchPolyMode(self):
         self.polyMode =  not self.polyMode
         print(self.polyMode)
+
+
+    def setAmb(self, val):
+        self.ambient = val
+
+
+    def setDiff(self, val):
+        self.diffuse = val
+
+
+    def setSpec(self, val):
+        self.specular = val

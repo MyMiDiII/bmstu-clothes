@@ -4,6 +4,9 @@ in vec3 fragPos;
 in vec3 normal;
 
 uniform float ambientCoef;
+uniform float diffuseCoef;
+uniform float specularCoef;
+
 uniform vec4 light;
 uniform vec3 lightPos;
 
@@ -21,13 +24,12 @@ void main()
     vec3 lightDir = normalize(lightPos - fragPos);
     float diff = dot(norm, lightDir);
     if (diff < 0) { diff = -diff; }
-    vec3 diffuse = 1 * diff * lightColor;
+    vec3 diffuse = diffuseCoef * diff * lightColor;
 
-    float spS = 0.05;
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32768);
-    vec3 specular = spS * spec * lightColor;
+    vec3 specular = specularCoef * spec * lightColor;
 
     fragColor = vec4((ambient + diffuse + specular) * vec3(curColor), 1);
 }

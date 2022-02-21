@@ -64,6 +64,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.colorBtn.clicked.connect(self.chooseColor)
         self.windChBox.stateChanged.connect(self.switchWind)
 
+        self.ambDSB.valueChanged.connect(self.setAmb)
+        self.diffDSB.valueChanged.connect(self.setDiff)
+        self.specDSB.valueChanged.connect(self.setSpec)
+
         timer = QtCore.QTimer(self)
         self.dt = 5
         timer.setInterval(self.dt)
@@ -71,10 +75,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         timer.start()
 
 
+    def setAmb(self):
+        self.GL.setAmb(self.ambDSB.value())
+
+
+    def setDiff(self):
+        self.GL.setDiff(self.diffDSB.value())
+
+
+    def setSpec(self):
+        self.GL.setSpec(self.specDSB.value())
+
+
     def switchWind(self):
         wind = self.windChBox.isChecked()
         self.GL.updatePhys("wind", wind)
-
 
 
     def load(self):
