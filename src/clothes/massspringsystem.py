@@ -28,49 +28,22 @@ class MassSpringModel(Object):
         self.springs = []
 
         index = 0
-        #front = pattern.getPatterns()
-        front, frontMasses, back, backMasses = pattern.getPatterns()
+        front, back, seams, triag = pattern.getPatterns()
+        self.indices.extend(triag)
+
         n, m = front.shape
 
         for i in range(n):
             for j in range(m):
-                print("{:4d}".format(front[i][j]), end=" ")
-            print()
-
-        for i in range(n):
-            for j in range(m):
-                print("{:4d}".format(back[i][j]), end=" ")
-            print()
-
-        #for i in range(n):
-        #    for j in range(m):
-        #        print("{:4d}".format(frontMasses[i][j]), end=" ")
-        #    print()
-
-        #for i in range(n):
-        #    for j in range(m):
-        #        print("{:4d}".format(backMasses[i][j]), end=" ")
-        #    print()
-
-
-        for i in range(n):
-            for j in range(m):
                 if front[i][j]:
-                    #if frontMasses[i][j]:
                     self.addMass(i, j, (0, 0, 0.1))
                     self.addTriangles(front, i, j)
-
-        n, m = back.shape
 
         for i in range(2, n - 2):
             for j in range(2, m - 2):
                 if back[i][j]:
-                    #if backMasses[i][j]:
                     self.addMass(i, j, (0, 0, -0.1))
                     self.addTriangles(back, i, j)
-
-        #size = len(self.masses)
-        #self.indices.extend([ind + size for ind in self.indices])
 
         for i in range(2, n - 2):
             for j in range(2, m - 2):
@@ -84,32 +57,20 @@ class MassSpringModel(Object):
                     self.addSprings(back, i, j, SpringType.shear)
                     self.addSprings(back, i, j, SpringType.bend)
 
-                #if seams[i][j]:
-                #    self.addSeamSpring(front[i][j], back[i][j])
+        for seam in seams:
+            self.addSpring(*seam)
 
         self.indices = np.array(self.indices, dtype="int32")
 
 
-    def addSeamSpring(self, ind1, ind2):
+    def addSpring(self, ind1, ind2, orderInd, springType):
         self.masses[ind1 - 1].addSpring(
                 self.masses[ind2 - 1],
                 self.len0,
-                self.structStiff,
-                0,
-                2
+                self.striffness,
+                orderInd,
+                springType
                 )
-
-        self.masses[ind2 - 1].addSpring(
-                self.masses[ind1 - 1],
-                self.len0,
-                self.structStiff,
-                0,
-                2
-                )
-
-        self.indices.extend([ind2 - 1,
-                             ind1 - 1,
-                             ind1])
 
 
     def addSprings(self, grid, i, j, springType):
@@ -119,26 +80,20 @@ class MassSpringModel(Object):
 
         for orderInd, nearInd in enumerate(indices):
             if nearInd:
-                self.masses[ind - 1].addSpring(
-                        self.masses[nearInd - 1],
-                        self.len0,
-                        self.striffness,
-                        orderInd,
-                        springType
-                        )
+                self.addSpring(ind, nearInd, orderInd, springType)
 
 
     def addMass(self, i, j, move):
         self.masses.append(
             Mass(
                 self.mass,
-                (move[0] + j * self.len0, move[1] - i * self.len0,
-                    move[2] + uniform(-ZSTEP, ZSTEP)),
                 #(move[0] + j * self.len0, move[1] - i * self.len0,
-                #    move[2] + 0),
+                #    move[2] + uniform(-ZSTEP, ZSTEP)),
+                (move[0] + j * self.len0, move[1] - i * self.len0,
+                    move[2] + 0),
                 #(move[0] + j * self.len0, move[1], move[2] + i * self.len0),
                 #True
-                i == 2
+                i == 4
                 #(j * self.len0, 0, -i * self.len0),
                 #(i == 2 and j == 2 or i == 2 and j == 6)
             )
@@ -188,20 +143,6 @@ class MassSpringModel(Object):
 
 
     def getVertexes(self):
-        #head = []
-        #tail = []
-        #for mass in self.masses:
-        #    pos = mass.getPos()
-        #    head.extend(pos)
-        #    norm = mass.getNormal()
-        #    head.extend(norm)
-
-        #    movedPos = [pos[0], pos[1] + 8e-3, pos[2] + 8e-3]
-        #    negNorm = mass.getNegNormal()
-        #    tail.extend(movedPos + negNorm)
-
-        #return np.array(head + tail, dtype='float32')
-
         return np.array([mass.getPosition() + mass.getNegNormal()
                          for mass in self.masses],
                         dtype='float32')

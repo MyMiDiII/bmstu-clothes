@@ -2,6 +2,7 @@ import numpy as np
 from copy import deepcopy
 
 from clothes.templates import *
+from clothes.spring import SpringType
 
 class Pattern:
 
@@ -53,14 +54,41 @@ class TShirt:
         back = self.getBack()
         n, m = TSHIRT_SEAMS.shape
 
-        #seams = []
-        #for i in range(n):
-        #    for j in range(m):
-        #        if TSHIRT_SEAMS[i][j]:
-        #            for k in range(i - 2, i + 3):
-        #                for l in range(j - 2, j + 3):
-        #                    seams.append()
+        types = [SpringType.struct, SpringType.shear]
 
+        seams = []
+        triangles = []
+        for i in range(n):
+            for j in range(m):
+                if TSHIRT_SEAMS[i][j] == 1:
+                    for k in range(j - 1, j + 2):
+                        if back[i][k]:
+                            seams.append([
+                                front[i][j],
+                                back[i][k],
+                                j - k + 2,
+                                types[abs(j - k)]
+                                ])
+                            seams.append([
+                                back[i][k],
+                                front[i][j],
+                                j - k + 2,
+                                types[abs(j - k)]
+                                ])
+
+                    if back[i][j] and front[i][j + 1]:
+                        triangles.extend([
+                            back[i][j] - 1,
+                            front[i][j + 1] - 1,
+                            front[i][j] - 1
+                            ])
+
+                    if back[i][j] and back[i][j + 1] and front[i][j + 1]:
+                        triangles.extend([
+                            back[i][j] - 1,
+                            back[i][j + 1] - 1,
+                            front[i][j + 1] - 1
+                            ])
 
 
         #arr = np.array(
@@ -92,4 +120,4 @@ class TShirt:
         #            self.index += 1
 
         #return arr
-        return front, TSHIRT_FRONT, back, TSHIRT_BACK
+        return front, back, seams, triangles
