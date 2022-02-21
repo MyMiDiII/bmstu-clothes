@@ -53,26 +53,13 @@ class TShirt:
         back = self.getBack()
         n, m = TSHIRT_SEAMS.shape
 
-        seams = []
-        for i in range(n):
-            for j in range(m):
-                if TSHIRT_SEAMS[i][j]:
-                    if i == 2:
-                        front[i - 1][j] = back[i][j]
-                        back[i - 1][j] = front[i][j]
-
-                    if i == 8 and j in [2, 3, 4, 28, 29, 30]:
-                        front[i + 1][j] = back[i][j]
-                        back[i + 1][j] = front[i][j]
-
-                    if i == 9 and j == 5:
-                        front[i + 1][j - 1] = back[i][j]
-                        back[i + 1][j - 1] = front[i][j]
-
-                    if i > 9 and j == 6:
-                        front[i][j - 1] = back[i][j]
-                        back[i][j - 1] = front[i][j]
-                        
+        #seams = []
+        #for i in range(n):
+        #    for j in range(m):
+        #        if TSHIRT_SEAMS[i][j]:
+        #            for k in range(i - 2, i + 3):
+        #                for l in range(j - 2, j + 3):
+        #                    seams.append()
 
 
 

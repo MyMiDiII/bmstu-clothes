@@ -1,15 +1,38 @@
 import glm
 
+import enum
+DIAG_COEF = 2 ** (1 / 2)
+
+class SpringType(enum.Enum):
+    struct = {
+            "lenCoef" : 1,
+            "k" : 1,
+            "which" : [(-1, 0), (0, 1), (1, 0), (0, -1)],
+            "indexes" : [2, 4, 6, 8]
+        }
+    shear = {
+            "lenCoef" : DIAG_COEF,
+            "k" : 2,
+            "which" : [(-1, -1), (-1, 1), (1, 1), (1, -1)],
+            "indexes" : [1, 3, 5, 7]
+        }
+    bend = {
+            "lenCoef" : 2 * 0.8,
+            "k" : 2,
+            "which" : [(-2, 0), (0, 2), (2, 0), (0, -2)],
+            "indexes" : [100] * 4
+        }
+
+
 class Spring:
 
-    def __init__(self, massFrom, massTo, len0, k, springType, index):
+    def __init__(self, massFrom, massTo, len0, k, index, springType : SpringType):
         self.massFrom = massFrom
         self.massTo   = massTo
-        self.len0     = len0
-        self.k        = k
+        self.len0     = len0 * springType.value["lenCoef"]
+        self.k        = k * springType.value["k"]
+        self.orderIndex = springType.value["indexes"][index]
         self.type     = springType
-
-        self.orderIndex = index
 
 
     def getMassTo(self):
@@ -29,13 +52,10 @@ class Spring:
 
 
     def getVector(self):
-        #print("two mass", self.massFrom, self.massTo)
-        #print(self.massFrom.getDistance(self.massTo))
         return self.massFrom.getDistance(self.massTo)
 
 
     def getLen(self):
-        #print(self.getVector())
         return glm.length(self.getVector())
 
 
@@ -47,9 +67,9 @@ class Spring:
 
 
     def stabilize(self):
-        # print("STABILIZE")
-        if (self.massFrom.isPinned() and self.massTo.isPinned()
-            or abs(self.len0) < 1e-6):
+        if (self.type == SpringType.bend
+                or self.massFrom.isPinned() and self.massTo.isPinned()
+                or abs(self.len0) < 1e-6):
             return
 
         curLen = self.getLen()
@@ -57,17 +77,10 @@ class Spring:
 
 
         while tau > 0.01:
-            #print("len0", self.len0)
-            #print("mF", self.massFrom.getPos())
-            #print("mT", self.massTo.getPos())
-            #print("cl", curLen)
-            #print("tau", tau)
             diff = (curLen - self.len0) / curLen
             correctionVec = diff * self.getVector()
-            #print("cv", correctionVec)
             notPinnedNum = (2. - self.massFrom.isPinned()
                               - self.massTo.isPinned())
-            #print("pn", notPinnedNum)
 
             if not self.massFrom.isPinned():
                 self.massFrom.move(correctionVec / notPinnedNum)

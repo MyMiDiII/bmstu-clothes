@@ -58,10 +58,6 @@ class Mass:
 
 
     def getDistance(self, mass):
-       # print(mass)
-       # print("mass", mass.getRadiusVector())
-       # print("self", self.getRadiusVector())
-       # print("diff", mass.getRadiusVector() - self.getRadiusVector())
         return mass.getRadiusVector() - self.getRadiusVector()
 
 
@@ -78,32 +74,17 @@ class Mass:
         damping = -dampCoef * self.vel
 
         x, y, z, t = self.pos.x, self.pos.y, self.pos.z, self.curTime
-        #wind = (windCoef * glm.dot(self.normal,
-        #       glm.vec3(
-        #            0.1 * sin(5 * t),
-        #            0,
-        #            1.5 * abs(sin(z + 5 * t)) + 0.1 * cos(y + 5 * t))
-        #       - self.vel) * self.normal)
-        wind = glm.vec3()
-        #wind = glm.vec3(
-        #            0.5 * sin(x * y * t),
-        #            - 0.5 * cos(z * t),
-        #            0.5 * sin(cos(5 * x * y * z * t))
-        #            )
         wind = glm.vec3(
                     0.1 * sin(10 * t),
                     0,
                     0.1 * abs(sin(z + 10 * t))) if windCoef else glm.vec3()
-        # + 0.1 * abs(cos(y + 10 * t))
 
         return gravity + internal + damping + wind
 
     
-    def addSpring(self, massTo, len0, k, spType, index):
-        spring = Spring(self, massTo, len0, k, spType, index)
+    def addSpring(self, massTo, len0, k, index, spType):
+        spring = Spring(self, massTo, len0, k, index, spType)
         bisect.insort(self.springs, spring, key=lambda sp: sp.getOrderInd())
-
-        #self.springs.append()
 
 
     def updateState(self, dt, gravity, damping, wind):
@@ -111,26 +92,14 @@ class Mass:
             return
 
         self.curTime += dt
-        #self.pos = self.pos + dt * self.vel
         curPos = self.pos
+
         self.acc = self.getForce(gravity, damping, wind) / self.mass
         self.pos = 2 * self.pos - self.prevPos + self.acc * dt * dt
+
         self.vel = (self.pos - curPos) / dt
         self.ppPos = self.prevPos
         self.prevPos = curPos
-
-        #y = self.pos.y
-        #z = self.pos.z
-
-        #if (y + 0.125) ** 2 + z * z < 0.02:
-        #    self.pos = self.prevPos
-        #    self.prevPos = self.ppPos
-            #direction = glm.normalize(glm.vec3(0, y + 0.125, z)) * 0.002
-            #self.pos = glm.vec3(self.pos.x, -0.125, 0) + direction
-
-
-        #if self.pos.y < -0.5:
-        #    self.pos = glm.vec3(self.pos.x, 0, self.pos.z)
 
 
     def __getOneSideNormal(self, mass1, mass2):
@@ -146,11 +115,6 @@ class Mass:
         self.normal = glm.vec3()
         normalSprings = [sp for sp in self.springs if sp.getOrderInd() not in
                 [100]]
-
-        #if len(normalSprings) == 8:
-        #    normalSprings = [sp for sp in normalSprings
-        #                         if sp.getOrderInd() in [4, 5, 6]]
-
 
         for i, sp in enumerate(normalSprings):
             self.normal += self.__getOneSideNormal(
