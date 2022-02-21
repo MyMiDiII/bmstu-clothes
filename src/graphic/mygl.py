@@ -134,7 +134,7 @@ class myGL(QtOpenGL.QGLWidget):
 
 
     def mousePressEvent(self, event):
-        selfPos = self.pos()
+        selfPos = self.parent.mapToGlobal(self.pos())
         self.lastPos = QPoint(selfPos.x() + self.width() // 2,
                               selfPos.y() + self.height() // 2
                        )
@@ -167,9 +167,9 @@ class myGL(QtOpenGL.QGLWidget):
 
     def leaveEvent(self, event):
         if self.camMode:
-            selfPos = self.pos()
-            self.lastPos = QPoint(self.parent.pos().x() + selfPos.x() + self.width() // 2,
-                                  self.parent.pos().y() + selfPos.y() + self.height() // 2
+            selfPos = self.parent.mapToGlobal(self.pos())
+            self.lastPos = QPoint(selfPos.x() + self.width() // 2,
+                                  selfPos.y() + self.height() // 2
                            )
             print(self.parent.pos().x(), self.parent.pos().y())
             self.cursor.setPos(self.lastPos)
