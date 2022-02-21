@@ -161,6 +161,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.translateVec["a"] = True
         elif event.key() == Qt.Key_D:
             self.translateVec["d"] = True
+        elif event.key() == Qt.Key_P:
+            self.GL.switchPolyMode()
 
 
     def keyReleaseEvent(self, event):

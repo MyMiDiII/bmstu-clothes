@@ -27,6 +27,7 @@ class myGL(QtOpenGL.QGLWidget):
         self.parent = parent
         QtOpenGL.QGLWidget.__init__(self, parent)
 
+        self.polyMode = False
         self.camMode = False
         self.setMouseTracking(self.camMode)
         self.cursor = QCursor()
@@ -56,7 +57,8 @@ class myGL(QtOpenGL.QGLWidget):
         #print("resize")
         gl.glViewport(0, 0, width, height)
         self.camera.changePerspective(ratio=width/height)
-        self.camera.setPosition([0, 0, 2])
+        self.camera.setPosition([-1, 0, 0])
+        self.camera.rotateY(45)
 
 
     def paintGL(self):
@@ -114,7 +116,13 @@ class myGL(QtOpenGL.QGLWidget):
         gl.glBindVertexArray(VAO)
         gl.glDrawElements(gl.GL_TRIANGLES, self.object.getIndices().size,
                           gl.GL_UNSIGNED_INT, None)
-        #gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+
+        if self.polyMode:
+            gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        else:
+            gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+
+
         gl.glLightModelf(gl.GL_LIGHT_MODEL_TWO_SIDE, gl.GL_TRUE)
         #print("PAINT END!")
 
@@ -191,3 +199,7 @@ class myGL(QtOpenGL.QGLWidget):
         if what == "wind":
             self.object.setWind(how)
 
+
+    def switchPolyMode(self):
+        self.polyMode =  not self.polyMode
+        print(self.polyMode)

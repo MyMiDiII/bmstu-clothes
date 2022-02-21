@@ -119,17 +119,17 @@ class Mass:
         self.ppPos = self.prevPos
         self.prevPos = curPos
 
-        y = self.pos.y
-        z = self.pos.z
+        #y = self.pos.y
+        #z = self.pos.z
 
-        if (y + 0.125) ** 2 + z * z < 0.02:
-            self.pos = self.prevPos
-            self.prevPos = self.ppPos
+        #if (y + 0.125) ** 2 + z * z < 0.02:
+        #    self.pos = self.prevPos
+        #    self.prevPos = self.ppPos
             #direction = glm.normalize(glm.vec3(0, y + 0.125, z)) * 0.002
             #self.pos = glm.vec3(self.pos.x, -0.125, 0) + direction
 
 
-        #if self.pos.y < 0:
+        #if self.pos.y < -0.5:
         #    self.pos = glm.vec3(self.pos.x, 0, self.pos.z)
 
 

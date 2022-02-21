@@ -1,4 +1,5 @@
 import numpy as np
+from copy import deepcopy
 
 from clothes.templates import *
 
@@ -21,7 +22,7 @@ class TShirt:
 
 
     def getFront(self):
-        arr = TSHIRT_FRONT
+        arr = deepcopy(TSHIRT_FRONT)
 
         n, m = arr.shape
         for i in range(n):
@@ -33,7 +34,7 @@ class TShirt:
         return arr
 
     def getBack(self):
-        arr = TSHIRT_BACK
+        arr = deepcopy(TSHIRT_BACK)
 
         n, m = arr.shape
         for i in range(n):
@@ -52,18 +53,28 @@ class TShirt:
         back = self.getBack()
         n, m = TSHIRT_SEAMS.shape
 
-        dirs = ["up", "left", "right", "down"]
-
-        seams = dict()
+        seams = []
         for i in range(n):
             for j in range(m):
                 if TSHIRT_SEAMS[i][j]:
-                    curDir = "up" if i == 2 else (
-                                 "down" if i == 7 else (
-                                     "left" if j == 5 or j == 6 else "right"
-                                 )
-                             )
-                    seams[back[i][j]] = (front[i][j], curDir)
+                    if i == 2:
+                        front[i - 1][j] = back[i][j]
+                        back[i - 1][j] = front[i][j]
+
+                    if i == 8 and j in [2, 3, 4, 28, 29, 30]:
+                        front[i + 1][j] = back[i][j]
+                        back[i + 1][j] = front[i][j]
+
+                    if i == 9 and j == 5:
+                        front[i + 1][j - 1] = back[i][j]
+                        back[i + 1][j - 1] = front[i][j]
+
+                    if i > 9 and j == 6:
+                        front[i][j - 1] = back[i][j]
+                        back[i][j - 1] = front[i][j]
+                        
+
+
 
         #arr = np.array(
         #        [[0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -94,4 +105,4 @@ class TShirt:
         #            self.index += 1
 
         #return arr
-        return front, back, seams
+        return front, TSHIRT_FRONT, back, TSHIRT_BACK

@@ -35,13 +35,35 @@ class MassSpringModel(Object):
 
         index = 0
         #front = pattern.getPatterns()
-        front, back = pattern.getPatterns()
+        front, frontMasses, back, backMasses = pattern.getPatterns()
         n, m = front.shape
 
-        for i in range(2, n - 2):
-            for j in range(2, m - 2):
+        for i in range(n):
+            for j in range(m):
+                print("{:4d}".format(front[i][j]), end=" ")
+            print()
+
+        for i in range(n):
+            for j in range(m):
+                print("{:4d}".format(back[i][j]), end=" ")
+            print()
+
+        for i in range(n):
+            for j in range(m):
+                print("{:4d}".format(frontMasses[i][j]), end=" ")
+            print()
+
+        for i in range(n):
+            for j in range(m):
+                print("{:4d}".format(backMasses[i][j]), end=" ")
+            print()
+
+
+        for i in range(n):
+            for j in range(m):
                 if front[i][j]:
-                    self.addMass(i, j, (0, 0, 0.1))
+                    if frontMasses[i][j]:
+                        self.addMass(i, j, (0, 0, 0.1))
                     self.addTriangles(front, i, j)
 
         n, m = back.shape
@@ -49,24 +71,52 @@ class MassSpringModel(Object):
         for i in range(2, n - 2):
             for j in range(2, m - 2):
                 if back[i][j]:
-                    self.addMass(i, j, (0, 0, -10))
+                    if backMasses[i][j]:
+                        self.addMass(i, j, (0, 0, -0.1))
                     self.addTriangles(back, i, j)
 
         #size = len(self.masses)
         #self.indices.extend([ind + size for ind in self.indices])
-        self.indices = np.array(self.indices, dtype="int32")
 
         for i in range(2, n - 2):
             for j in range(2, m - 2):
-                if front[i][j]:
+                if frontMasses[i][j]:
                     self.addStructSprings(front, i, j)
                     self.addShearSprings(front, i, j)
                     self.addBendingSprings(front, i, j)
 
-                if back[i][j]:
+                if backMasses[i][j]:
                     self.addStructSprings(back, i, j)
                     self.addShearSprings(back, i, j)
                     self.addBendingSprings(back, i, j)
+
+                #if seams[i][j]:
+                #    self.addSeamSpring(front[i][j], back[i][j])
+
+        self.indices = np.array(self.indices, dtype="int32")
+
+
+    def addSeamSpring(self, ind1, ind2):
+        self.masses[ind1 - 1].addSpring(
+                self.masses[ind2 - 1],
+                self.len0,
+                self.structStiff,
+                0,
+                2
+                )
+
+        self.masses[ind2 - 1].addSpring(
+                self.masses[ind1 - 1],
+                self.len0,
+                self.structStiff,
+                0,
+                2
+                )
+
+        self.indices.extend([ind2 - 1,
+                             ind1 - 1,
+                             ind1])
+
 
 
     def addStructSprings(self, grid, i, j):
@@ -137,8 +187,10 @@ class MassSpringModel(Object):
         self.masses.append(
             Mass(
                 self.mass,
+                #(move[0] + j * self.len0, move[1] - i * self.len0,
+                #    move[2] + uniform(-ZSTEP, ZSTEP)),
                 (move[0] + j * self.len0, move[1] - i * self.len0,
-                    move[2] + uniform(-ZSTEP, ZSTEP)),
+                    move[2] + 0),
                 #(move[0] + j * self.len0, move[1], move[2] + i * self.len0),
                 #True
                 i == 2
