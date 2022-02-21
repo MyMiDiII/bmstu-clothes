@@ -39,14 +39,14 @@ class MassSpringModel(Object):
                     self.addMass(i, j, (0, 0, 0.15 if i != 2 else 0.1), 0)
                     self.addTriangles(front, i, j)
 
-        for i in range(2, n - 2):
-            for j in range(2, m - 2):
+        for i in range(n):
+            for j in range(m):
                 if back[i][j]:
                     self.addMass(i, j, (0, 0, -0.15 if i != 2 else -0.1), 1)
                     self.addTriangles(back, i, j)
 
-        for i in range(2, n - 2):
-            for j in range(2, m - 2):
+        for i in range(n):
+            for j in range(m):
                 if front[i][j]:
                     self.addSprings(front, i, j, SpringType.struct)
                     self.addSprings(front, i, j, SpringType.shear)
@@ -133,9 +133,7 @@ class MassSpringModel(Object):
 
 
     def update(self, dt):
-        print("new update")
         for i, mass in enumerate(self.masses):
-            #print("mass #", i)
             mass.updateState(dt, self.gravity, self.damping, self.wind)
 
         for i, mass in enumerate(self.masses):

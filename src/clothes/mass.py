@@ -110,11 +110,11 @@ class Mass:
         z = self.prevPos.z
         
 
-        if (y + 0.12) ** 12 + (z - 0.05) ** 2 < 0.11 ** 2:
-            direction = 0.11 * glm.normalize(glm.vec3(0, y + 0.12, z - 0.05))
-            newPos = glm.vec3(x, 0.12, 0.05) + direction
+        if abs(x - 0.8) > 0.1 and (y + 0.17) ** 12 + (z - 0.05) ** 2 < 0.16 ** 2:
+            direction = 0.16 * glm.normalize(glm.vec3(0, yp + 0.17, zp - 0.05))
+            newPos = glm.vec3(xp, 0.17, 0.05) + direction
             diff = self.prevPos - newPos
-            self.pos = self.prevPos - (1 - 0.999) * diff
+            self.pos = self.prevPos - 1e-4 * diff
 
 
     def __getOneSideNormal(self, mass1, mass2):
