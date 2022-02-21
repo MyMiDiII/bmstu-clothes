@@ -2,6 +2,7 @@ import OpenGL.GL as gl
 import glm
 import numpy as np
 from random import uniform
+from math import pi, cos, sin
 
 from graphic.objects.object import Object
 from clothes.mass import Mass
@@ -36,13 +37,13 @@ class MassSpringModel(Object):
         for i in range(n):
             for j in range(m):
                 if front[i][j]:
-                    self.addMass(i, j, (0, 0, 0.15 if i != 2 else 0.1), 0)
+                    self.addMass(i, j, (-(n - 1) / 2 * self.len0, 0, 0.05), 1)
                     self.addTriangles(front, i, j)
 
         for i in range(n):
             for j in range(m):
                 if back[i][j]:
-                    self.addMass(i, j, (0, 0, -0.15 if i != 2 else -0.1), 1)
+                    self.addMass(i, j, (-(n - 1) / 2 * self.len0, 0, -0.05), -1)
                     self.addTriangles(back, i, j)
 
         for i in range(n):
@@ -84,21 +85,23 @@ class MassSpringModel(Object):
 
 
     def addMass(self, i, j, move, plus):
+        x = move[0] + j * self.len0
+        y = move[1] - i * self.len0
+        z = move[2] + uniform(-ZSTEP, ZSTEP)
+        cond = i < 6 and (j < 13 or j > 20)
+
+        R = 0.09
+        if cond:
+            y = R * cos(pi / 28 + (i - 2) * pi / 14) - abs(x / 10)
+            z = plus * R * sin(pi / 28 + (i - 2) * pi / 14)
+
         self.masses.append(
             Mass(
                 self.mass,
-                #(move[0] + j * self.len0, move[1] - i * self.len0,
-                #    move[2] + uniform(-ZSTEP, ZSTEP)),
-                (move[0] + j * self.len0, move[1] - i * self.len0,
-                    move[2] + 0),
-                #(move[0] + j * self.len0, move[1], move[2] + i * self.len0),
-                #True
-                False
-                #(i == 2 + plus or i == 4 + plus)
-                #(j * self.len0, 0, -i * self.len0),
-                #(i == 2 and j == 2 or i == 2 and j == 6)
+                (x, y, z),
+                cond
             )
-            )
+        )
 
 
     def addTriangles(self, grid, i, j):
