@@ -88,12 +88,12 @@ class MassSpringModel(Object):
         x = move[0] + j * self.len0
         y = move[1] - i * self.len0
         z = move[2] + uniform(-ZSTEP, ZSTEP)
-        cond = i < 6 and (j < 13 or j > 20)
+        cond = i < 5 and (j < 13 or j > 20)
 
-        R = 0.09
+        R = 0.05
         if cond:
-            y = R * cos(pi / 28 + (i - 2) * pi / 14) - abs(x / 10)
-            z = plus * R * sin(pi / 28 + (i - 2) * pi / 14)
+            y = R * cos(pi / 14 + (i - 2) * pi / 7) - abs(x / 10)
+            z = plus * R * sin(pi / 14 + (i - 2) * pi / 7)
 
         self.masses.append(
             Mass(
