@@ -77,7 +77,7 @@ class Mass:
 
         damping = -dampCoef * self.vel
 
-        x, y, z, t = self.pos.x, self.pos.y, self.pos.z, self.curTime / 1000
+        x, y, z, t = self.pos.x, self.pos.y, self.pos.z, self.curTime
         #wind = (windCoef * glm.dot(self.normal,
         #       glm.vec3(
         #            0.1 * sin(5 * t),
@@ -90,6 +90,11 @@ class Mass:
         #            - 0.5 * cos(z * t),
         #            0.5 * sin(cos(5 * x * y * z * t))
         #            )
+        wind = glm.vec3(
+                    0.1 * sin(10 * t),
+                    0,
+                    0.1 * abs(sin(z + 10 * t))) if windCoef else glm.vec3()
+        # + 0.1 * abs(cos(y + 10 * t))
 
         return gravity + internal + damping + wind
 
@@ -111,7 +116,18 @@ class Mass:
         self.acc = self.getForce(gravity, damping, wind) / self.mass
         self.pos = 2 * self.pos - self.prevPos + self.acc * dt * dt
         self.vel = (self.pos - curPos) / dt
+        self.ppPos = self.prevPos
         self.prevPos = curPos
+
+        y = self.pos.y
+        z = self.pos.z
+
+        if (y + 0.125) ** 2 + z * z < 0.02:
+            self.pos = self.prevPos
+            self.prevPos = self.ppPos
+            #direction = glm.normalize(glm.vec3(0, y + 0.125, z)) * 0.002
+            #self.pos = glm.vec3(self.pos.x, -0.125, 0) + direction
+
 
         #if self.pos.y < 0:
         #    self.pos = glm.vec3(self.pos.x, 0, self.pos.z)
@@ -122,7 +138,6 @@ class Mass:
         vec2 = mass2.getPos() - self.pos
         crossProd = glm.cross(vec1, vec2)
         norm = glm.length(crossProd)
-        #crossProd = crossProd if norm > 1e-3 else glm.vec3()
 
         return glm.normalize(crossProd)
 
@@ -131,7 +146,11 @@ class Mass:
         self.normal = glm.vec3()
         normalSprings = [sp for sp in self.springs if sp.getOrderInd() not in
                 [100]]
-        #normalSprings = normalSprings[:3]
+
+        #if len(normalSprings) == 8:
+        #    normalSprings = [sp for sp in normalSprings
+        #                         if sp.getOrderInd() in [4, 5, 6]]
+
 
         for i, sp in enumerate(normalSprings):
             self.normal += self.__getOneSideNormal(

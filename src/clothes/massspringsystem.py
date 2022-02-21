@@ -19,8 +19,9 @@ class MassSpringModel(Object):
         self.timer = 0
 
         self.gravity = 9.81
+        self.wind = True
         self.mass = 0.01
-        self.structStiff = 0.5
+        self.structStiff = 1
         self.shearStiff = 2
         self.bendStiff = 5
         self.damping = 0.1
@@ -40,7 +41,7 @@ class MassSpringModel(Object):
         for i in range(2, n - 2):
             for j in range(2, m - 2):
                 if front[i][j]:
-                    self.addMass(i, j, 0)
+                    self.addMass(i, j, (0, 0, 0.1))
                     self.addTriangles(front, i, j)
 
         n, m = back.shape
@@ -48,7 +49,7 @@ class MassSpringModel(Object):
         for i in range(2, n - 2):
             for j in range(2, m - 2):
                 if back[i][j]:
-                    self.addMass(i, j, -2)
+                    self.addMass(i, j, (0, 0, -10))
                     self.addTriangles(back, i, j)
 
         #size = len(self.masses)
@@ -132,12 +133,13 @@ class MassSpringModel(Object):
                         )
 
 
-    def addMass(self, i, j, z):
+    def addMass(self, i, j, move):
         self.masses.append(
             Mass(
                 self.mass,
-                (z + j * self.len0, uniform(-ZSTEP, ZSTEP), -i * self.len0,),
-                #(j * self.len0, -i * self.len0, 0),
+                (move[0] + j * self.len0, move[1] - i * self.len0,
+                    move[2] + uniform(-ZSTEP, ZSTEP)),
+                #(move[0] + j * self.len0, move[1], move[2] + i * self.len0),
                 #True
                 i == 2
                 #(j * self.len0, 0, -i * self.len0),
@@ -180,10 +182,9 @@ class MassSpringModel(Object):
 
     def update(self, dt):
         for mass in self.masses:
-            mass.updateState(dt, self.gravity, self.damping)
+            mass.updateState(dt, self.gravity, self.damping, self.wind)
 
         for i, mass in enumerate(self.masses):
-            print('#', i)
             mass.updateNormal()
 
         for _ in range(2):
@@ -212,4 +213,8 @@ class MassSpringModel(Object):
 
     def getIndices(self):
         return self.indices
+
+
+    def setWind(self, how):
+        self.wind = how
 

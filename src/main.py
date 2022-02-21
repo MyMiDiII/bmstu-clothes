@@ -38,6 +38,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.curColor = QColor(255, 255, 255, 1)
         self.colorWindow = None
+        self.wind = True
 
         self.translateVec = {"w" : False, "s" : False,
                              "a" : False, "d" : False}
@@ -61,12 +62,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.yDownTurnBtn.clicked.connect(self.yDownRotate)
 
         self.colorBtn.clicked.connect(self.chooseColor)
+        self.windChBox.stateChanged.connect(self.switchWind)
 
         timer = QtCore.QTimer(self)
         self.dt = 5
         timer.setInterval(self.dt)
         timer.timeout.connect(self.timerActions)
         timer.start()
+
+
+    def switchWind(self):
+        wind = self.windChBox.isChecked()
+        self.GL.updatePhys("wind", wind)
+
 
 
     def load(self):

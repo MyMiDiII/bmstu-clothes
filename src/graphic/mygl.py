@@ -56,7 +56,7 @@ class myGL(QtOpenGL.QGLWidget):
         #print("resize")
         gl.glViewport(0, 0, width, height)
         self.camera.changePerspective(ratio=width/height)
-        self.camera.setPosition([0, 0, 1])
+        self.camera.setPosition([0, 0, 2])
 
 
     def paintGL(self):
@@ -104,7 +104,7 @@ class myGL(QtOpenGL.QGLWidget):
         self.shader.setVec4("curColor", *self.color)
 
         # настройки света
-        self.shader.setVec3("lightColor", *cfg.LIGHT_COLOR)
+        self.shader.setVec4("light", *cfg.LIGHT_COLOR)
         self.shader.setFloat("ambientCoef", cfg.AMBIENT)
         #self.shader.setVec3("lightPos", *cfg.LIGHT_POS)
         self.shader.setVec3("lightPos", *self.camera.getPosition())
@@ -185,4 +185,9 @@ class myGL(QtOpenGL.QGLWidget):
         self.color = color
         self.object.update(dt)
         self.updateGL()
+
+
+    def updatePhys(self, what, how):
+        if what == "wind":
+            self.object.setWind(how)
 
