@@ -33,6 +33,23 @@
 	\end{figure}
 }
 
+% subimage
+\makeatletter
+\let\c@lofdepth\relax
+\let\c@lotdepth\relax
+\makeatother
+\usepackage{subfigure}
+
+\newcommand{\subimg}[3]
+{
+    \subfigure[]
+    {
+        \includegraphics[height=#1]{../data/img/#2}
+        \label{subimg:#3}
+    }
+}
+
+
 %% Captions
 \usepackage[figurename=Рисунок,labelsep=endash,
             justification=centering]{caption}
