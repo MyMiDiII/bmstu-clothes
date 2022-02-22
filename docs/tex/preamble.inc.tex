@@ -1,8 +1,3 @@
-% russian language
-%\usepackage[utf8]{inputenc}
-%\usepackage[T2A]{fontenc}
-%\usepackage[english,russian]{babel}
-
 % table of contents
 \usepackage{tocloft}
 \renewcommand{\cfttoctitlefont}{\hfill\large\bfseries}
@@ -28,16 +23,6 @@
 \usepackage{graphicx}
 \usepackage{wrapfig}
 
-%\newcommand{\scheme}[4] {
-%	\begin{figure}[ht!]
-%		\center{
-%            \includegraphics[width=#1]{../data/schemes/#2}
-%            \caption{#3}
-%            \label{scheme:#4}
-%        }
-%	\end{figure}
-%}
-%
 \newcommand{\img}[4] {
 	\begin{figure}[ht!]
 		\center{
@@ -47,18 +32,6 @@
         }
 	\end{figure}
 }
-
-% subimage
-%\usepackage{subfigure}
-%\newcommand{\subimg}[3]
-%{
-%    \subfigure[]
-%    {
-%        \includegraphics[height=#1]{#2}
-%        \label{subimg:#3}
-%    }
-%}
-
 
 %% Captions
 \usepackage[figurename=Рисунок,labelsep=endash,
@@ -77,12 +50,11 @@
 \usepackage{amstext}
 \usepackage{ulem}
 \renewcommand{\ULdepth}{1.5pt}
-%
-%% Formulas
-%\usepackage{amsmath}
+
+% Formulas
 \DeclareMathOperator*{\argmax}{argmax}
-%
-%% Tabulars
+
+% Tabulars
 \usepackage{threeparttable}
 \usepackage{csvsimple}
 \usepackage{longtable,ltcaption,booktabs}
@@ -91,3 +63,8 @@
 
 % PDF
 \usepackage{pdfpages}
+
+% cites
+\usepackage{natbib}
+\bibpunct{[}{]}{;}{n}{}{}
+
