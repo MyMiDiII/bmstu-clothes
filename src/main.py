@@ -68,11 +68,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.diffDSB.valueChanged.connect(self.setDiff)
         self.specDSB.valueChanged.connect(self.setSpec)
 
+        self.stifDSB.valueChanged.connect(self.setStif)
+        self.massDSB.valueChanged.connect(self.setMass)
+        self.gravDSB.valueChanged.connect(self.setGrav)
+
         timer = QtCore.QTimer(self)
         self.dt = 5
         timer.setInterval(self.dt)
         timer.timeout.connect(self.timerActions)
         timer.start()
+
+
+    def setGrav(self):
+        self.GL.setGrav(self.gravDSB.value())
+
+
+    def setMass(self):
+        self.GL.setMass(self.massDSB.value())
+
+
+    def setStif(self):
+        self.GL.setStif(self.stifDSB.value())
 
 
     def setAmb(self):

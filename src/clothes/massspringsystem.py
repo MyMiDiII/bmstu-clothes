@@ -37,13 +37,17 @@ class MassSpringModel(Object):
         for i in range(n):
             for j in range(m):
                 if front[i][j]:
-                    self.addMass(i, j, (-(n - 1) / 2 * self.len0, 0, 0.05), 1)
+                    self.addMass(i, j, (-(n - 1) / 2 * self.len0,
+                                        0,
+                                        self.len0 / 2), 1)
                     self.addTriangles(front, i, j)
 
         for i in range(n):
             for j in range(m):
                 if back[i][j]:
-                    self.addMass(i, j, (-(n - 1) / 2 * self.len0, 0, -0.05), -1)
+                    self.addMass(i, j, (-(n - 1) / 2 * self.len0,
+                                        0,
+                                        -self.len0 / 2), -1)
                     self.addTriangles(back, i, j)
 
         for i in range(n):
@@ -86,11 +90,11 @@ class MassSpringModel(Object):
 
     def addMass(self, i, j, move, plus):
         x = move[0] + j * self.len0
-        y = move[1] - i * self.len0
+        y = move[1] - (i - 4) * self.len0
         z = move[2] + uniform(-ZSTEP, ZSTEP)
         cond = i < 5 and (j < 13 or j > 20)
 
-        R = 0.05
+        R = self.len0
         if cond:
             y = R * cos(pi / 14 + (i - 2) * pi / 7) - abs(x / 10)
             z = plus * R * sin(pi / 14 + (i - 2) * pi / 7)
@@ -158,4 +162,23 @@ class MassSpringModel(Object):
 
     def setWind(self, how):
         self.wind = how
+
+
+    def setStif(self, val):
+        self.striffness = val
+
+        for mass in self.masses:
+            for sp in mass.getSprings():
+                sp.setStif(val)
+
+
+    def setMass(self, val):
+        self.mass = val
+
+        for mass in self.masses:
+            mass.setMass(val)
+
+
+    def setGrav(self, val):
+        self.gravity = val
 

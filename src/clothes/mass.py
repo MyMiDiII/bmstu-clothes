@@ -22,6 +22,10 @@ class Mass:
         self.curTime = 0
 
 
+    def setMass(self, mass):
+        self.mass = mass
+
+
     def isPinned(self):
         return self.pinned
 

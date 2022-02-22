@@ -35,6 +35,14 @@ class Spring:
         self.type     = springType
 
 
+    def setLen(self, val):
+        self.len0 = val
+
+
+    def setStif(self, val):
+        self.k = val
+
+
     def getMassTo(self):
         return self.massTo
 

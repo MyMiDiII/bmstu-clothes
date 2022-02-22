@@ -26,6 +26,7 @@ class myGL(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):
         self.parent = parent
         QtOpenGL.QGLWidget.__init__(self, parent)
+        self.setFocusPolicy(Qt.ClickFocus)
 
         self.polyMode = False
         self.camMode = False
@@ -40,8 +41,8 @@ class myGL(QtOpenGL.QGLWidget):
         self.object.translate(0, 0, 0)
         self.camera = Camera()
 
-        self.ambient = 0.1
-        self.diffuse = 0.05
+        self.ambient = 0.3
+        self.diffuse = 0.55
         self.specular = 0.01
 
 
@@ -61,8 +62,10 @@ class myGL(QtOpenGL.QGLWidget):
         #print("resize")
         gl.glViewport(0, 0, width, height)
         self.camera.changePerspective(ratio=width/height)
-        self.camera.setPosition([-1, 0, 0])
-        self.camera.rotateY(45)
+        self.camera.setPosition([-1.2, 0.25, 1.2])
+        self.camera.rotateX(-13)
+        self.camera.rotateY(23)
+
 
 
     def paintGL(self):
@@ -220,3 +223,15 @@ class myGL(QtOpenGL.QGLWidget):
 
     def setSpec(self, val):
         self.specular = val
+
+
+    def setStif(self, val):
+        self.object.setStif(val)
+
+
+    def setMass(self, val):
+        self.object.setMass(val)
+
+
+    def setGrav(self, val):
+        self.object.setGrav(val)
