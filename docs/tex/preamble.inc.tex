@@ -18,6 +18,12 @@
 \usepackage[nottoc]{tocbibind} % for bib link
 \usepackage[numbers]{natbib}
 \renewcommand*{\bibnumfmt}[1]{#1.}
+%% Captions
+\usepackage[figurename=Рисунок,labelsep=endash,
+            justification=centering]{caption}
+\usepackage{subcaption}
+\usepackage{hyphenat}
+
 
 %% Images
 \usepackage{graphicx}
@@ -33,27 +39,26 @@
 	\end{figure}
 }
 
-% subimage
-\makeatletter
-\let\c@lofdepth\relax
-\let\c@lotdepth\relax
-\makeatother
-\usepackage{subfigure}
-
-\newcommand{\subimg}[3]
-{
-    \subfigure[]
-    {
-        \includegraphics[height=#1]{../data/img/#2}
-        \label{subimg:#3}
-    }
+\newcommand{\twoimg}[7] {
+    \begin{figure}[h]
+    \centering
+        \begin{minipage}[h]{0.4\linewidth}
+            \begin{center}
+                \includegraphics[height=#1]{../data/img/#2}
+                \caption{#3}
+                \label{img:#4}
+            \end{center}
+        \end{minipage}
+        \hspace{8ex}
+        \begin{minipage}[h]{0.4\linewidth}
+            \begin{center}
+                \includegraphics[height=#1]{../data/img/#5}
+                \caption{#6}
+                \label{img:#7}
+            \end{center}
+        \end{minipage}
+    \end{figure}
 }
-
-
-%% Captions
-\usepackage[figurename=Рисунок,labelsep=endash,
-            justification=centering]{caption}
-\usepackage{hyphenat}
 
 % Lists
 \usepackage{enumitem}

@@ -1,6 +1,6 @@
 .PHONY : report title clear main open
 
-report : title main open
+report : main open
 
 TOR : ./doc/TOR.docx
 	-mkdir pdf
