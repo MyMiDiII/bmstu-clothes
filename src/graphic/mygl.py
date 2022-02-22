@@ -10,6 +10,7 @@ from PyQt5.QtCore import Qt, QPoint
 from OpenGL.arrays import vbo
 import glfw
 import numpy as np
+from time import time
 
 import ctypes
 
@@ -24,6 +25,10 @@ import graphic.config as cfg
 
 class myGL(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):
+        self.frames = 0
+        self.startTime = time()
+        self.fps = 0
+
         self.parent = parent
         QtOpenGL.QGLWidget.__init__(self, parent)
         self.setFocusPolicy(Qt.ClickFocus)
@@ -202,6 +207,16 @@ class myGL(QtOpenGL.QGLWidget):
         self.object.update(dt)
         self.updateGL()
 
+        self.frames += 1
+        endTime = time()
+
+        if endTime - self.startTime > 0:
+            self.fps = int(round(self.frames / (endTime - self.startTime)))
+            self.frames = 0
+            self.startTime = endTime
+
+        print(self.fps)
+
 
     def updatePhys(self, what, how):
         if what == "wind":
@@ -235,3 +250,4 @@ class myGL(QtOpenGL.QGLWidget):
 
     def setGrav(self, val):
         self.object.setGrav(val)
+

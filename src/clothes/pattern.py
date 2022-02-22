@@ -275,6 +275,13 @@ class TShirt:
         #        [0, 0, 0, 0, 0, 0, 0, 0, 0]]
         #        )
 
+        k = 66
+        arr = np.array([[0] * (k + 4), [0] * (k + 4)] + [[0] * 2 + [1] * k + [0]
+            * 2 for _ in range(k)] + [[0] * (k + 4), [0] * (k + 4)])
+        print(arr)
+        #arr = np.array([[0] * (k + 2), [0] * (k + 2)] + [[[0] * 2 + [1] * k + [0]
+        #    * 2] for _ in range(k)] + [[0] * (k + 2), [0] * (k + 2)])
+        #print(arr)
         #arr = np.array(
         #        [[0, 0, 0, 0, 0, 0],
         #        [0, 0, 0, 0, 0, 0],
@@ -284,15 +291,16 @@ class TShirt:
         #        [0, 0, 0, 0, 0, 0]]
         #        )
 
-        #n, m = arr.shape
-        #for i in range(n):
-        #    for j in range(m):
-        #        if arr[i][j]:
-        #            arr[i][j] = self.index
-        #            self.index += 1
+        self.index = 0
+        n, m = arr.shape
+        for i in range(n):
+            for j in range(m):
+                if arr[i][j]:
+                    arr[i][j] = self.index
+                    self.index += 1
 
-        #return arr
-        return front, back, seams, triangles
+        return arr
+        #return front, back, seams, triangles
 
     #def getPatterns(self):
     #    front = self.getFront()
