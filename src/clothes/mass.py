@@ -102,7 +102,6 @@ class Mass:
         self.pos = 2 * self.pos - self.prevPos + self.acc * dt * dt
 
         self.vel = (self.pos - curPos) / dt
-        self.ppPos = self.prevPos
         self.prevPos = curPos
 
 

@@ -18,7 +18,7 @@ from graphic.shader import Shader
 
 from graphic.objects.camera import Camera
 from clothes.massspringsystem import MassSpringModel
-from clothes.pattern import TShirt
+from clothes.pattern import Cloth, TShirt
 
 import graphic.config as cfg
 
@@ -41,6 +41,7 @@ class myGL(QtOpenGL.QGLWidget):
 
         self.color = (1, 1, 1, 1.0)
         self.angle = 0
+        #self.tshirt = Cloth(9, 9)
         self.tshirt = TShirt()
         self.object = MassSpringModel(self.tshirt)
         self.object.translate(0, 0, 0)
@@ -52,8 +53,6 @@ class myGL(QtOpenGL.QGLWidget):
 
 
     def initializeGL(self):
-        #print("INIT")
-        #print(self.proj)
         self.qglClearColor(QtGui.QColor(50, 50, 50))
         gl.glEnable(gl.GL_DEPTH_TEST)
 
@@ -64,19 +63,16 @@ class myGL(QtOpenGL.QGLWidget):
 
 
     def resizeGL(self, width, height):
-        #print("resize")
         gl.glViewport(0, 0, width, height)
         self.camera.changePerspective(ratio=width/height)
         self.camera.setPosition([-1.2, 0.25, 1.2])
         self.camera.rotateX(-13)
         self.camera.rotateY(23)
-
+        #self.camera.setPosition([-1.2, 0, 0])
+        #self.camera.rotateY(45)
 
 
     def paintGL(self):
-        #print("PAINT!")
-        #print(list(self.indices))
-
         # очищаем экран
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 
@@ -87,14 +83,12 @@ class myGL(QtOpenGL.QGLWidget):
         # копируем массив вершин в вершинный буфер
         VBO = gl.glGenBuffers(1)
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, VBO)
-        #print("vrx size", self.object.getVertexes().size)
         gl.glBufferData(gl.GL_ARRAY_BUFFER, self.object.getVertexes(),
                         gl.GL_STATIC_DRAW)
 
         # копируем индексный массив в элементный буфер
         EBO = gl.glGenBuffers(1)
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, EBO)
-        #print("ind size", self.object.getIndices().size)
         gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, self.object.getIndices(),
                 gl.GL_STATIC_DRAW)
 
@@ -137,7 +131,6 @@ class myGL(QtOpenGL.QGLWidget):
 
 
         gl.glLightModelf(gl.GL_LIGHT_MODEL_TWO_SIDE, gl.GL_TRUE)
-        #print("PAINT END!")
 
 
     def translate(self, vec):
@@ -167,12 +160,6 @@ class myGL(QtOpenGL.QGLWidget):
             self.setCursor(self.cursor)
             self.setMouseTracking(self.camMode)
 
-        if self.camMode:
-            print("on")
-        else:
-            print("off")
-
-
     def mouseMoveEvent(self, event):
         curPos = event.globalPos()
 
@@ -192,7 +179,6 @@ class myGL(QtOpenGL.QGLWidget):
             self.lastPos = QPoint(selfPos.x() + self.width() // 2,
                                   selfPos.y() + self.height() // 2
                            )
-            print(self.parent.pos().x(), self.parent.pos().y())
             self.cursor.setPos(self.lastPos)
 
 
@@ -208,14 +194,13 @@ class myGL(QtOpenGL.QGLWidget):
         self.updateGL()
 
         self.frames += 1
-        endTime = time()
 
-        if endTime - self.startTime > 0:
-            self.fps = int(round(self.frames / (endTime - self.startTime)))
-            self.frames = 0
-            self.startTime = endTime
 
-        print(self.fps)
+    def getFps(self):
+        fps = self.frames
+        self.frames = 0
+
+        return fps
 
 
     def updatePhys(self, what, how):
@@ -224,8 +209,7 @@ class myGL(QtOpenGL.QGLWidget):
 
 
     def switchPolyMode(self):
-        self.polyMode =  not self.polyMode
-        print(self.polyMode)
+        self.polyMode = not self.polyMode
 
 
     def setAmb(self, val):
@@ -251,3 +235,12 @@ class myGL(QtOpenGL.QGLWidget):
     def setGrav(self, val):
         self.object.setGrav(val)
 
+
+    def setCloth(self, size):
+        self.tshirt = Cloth(size, size)
+        self.object = MassSpringModel(self.tshirt)
+
+
+    def setTShirt(self):
+        self.tshirt = TShirt()
+        self.object = MassSpringModel(self.tshirt)

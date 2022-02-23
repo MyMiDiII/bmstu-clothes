@@ -5,11 +5,35 @@ from clothes.templates import *
 from clothes.spring import SpringType
 
 class Pattern:
+    
+    def __init__(self):
+        pass
 
-    def __init__(self, matrix=np.zeros((1, 1))):
-        self.matrix = matrix
+class Cloth(Pattern):
 
-class TShirt:
+    def __init__(self, n, m):
+        self.arr = np.array([
+            [0] * (m + 4), [0] * (m + 4)]
+            + [[0] * 2 + [1] * m + [0] * 2 for _ in range(n)]
+            + [[0] * (m + 4), [0] * (m + 4)
+            ])
+
+    def getPatterns(self):
+        self.index = 1
+        n, m = self.arr.shape
+
+        for i in range(n):
+            for j in range(m):
+                if self.arr[i][j]:
+                    self.arr[i][j] = self.index
+                    self.index += 1
+
+        fixCond = lambda i, j: i == 2 and (j in [2, m - 3])
+
+        return [(self.arr, 0)], [], [], fixCond
+
+
+class TShirt(Pattern):
 
     def __init__(self, length=65, width=25, sleeve=(10, 15), neck=10):
         self.len0 = 5
@@ -43,8 +67,6 @@ class TShirt:
                 if arr[i][j]:
                     arr[i][j] = self.index
                     self.index += 1
-
-        print('max ind', self.index)
 
         return arr
 
@@ -261,70 +283,8 @@ class TShirt:
                         back[i + 1][j + 1] - 1
                         ])
 
+        #cond = 
+        fixCond = lambda i, j: i < 5 and (j < 13 or j > 20)
 
+        return [(front, 1), (back, -1)], seams, triangles, fixCond
 
-        #arr = np.array(
-        #        [[0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #        [0, 0, 1, 1, 1, 1, 1, 0, 0],
-        #        [0, 0, 1, 1, 1, 1, 1, 0, 0],
-        #        [0, 0, 1, 1, 1, 1, 1, 0, 0],
-        #        [0, 0, 1, 1, 1, 1, 1, 0, 0],
-        #        [0, 0, 1, 1, 1, 1, 1, 0, 0],
-        #        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        #        [0, 0, 0, 0, 0, 0, 0, 0, 0]]
-        #        )
-
-        k = 66
-        arr = np.array([[0] * (k + 4), [0] * (k + 4)] + [[0] * 2 + [1] * k + [0]
-            * 2 for _ in range(k)] + [[0] * (k + 4), [0] * (k + 4)])
-        print(arr)
-        #arr = np.array([[0] * (k + 2), [0] * (k + 2)] + [[[0] * 2 + [1] * k + [0]
-        #    * 2] for _ in range(k)] + [[0] * (k + 2), [0] * (k + 2)])
-        #print(arr)
-        #arr = np.array(
-        #        [[0, 0, 0, 0, 0, 0],
-        #        [0, 0, 0, 0, 0, 0],
-        #        [0, 0, 1, 1, 0, 0],
-        #        [0, 0, 1, 1, 0, 0],
-        #        [0, 0, 0, 0, 0, 0],
-        #        [0, 0, 0, 0, 0, 0]]
-        #        )
-
-        self.index = 0
-        n, m = arr.shape
-        for i in range(n):
-            for j in range(m):
-                if arr[i][j]:
-                    arr[i][j] = self.index
-                    self.index += 1
-
-        return arr
-        #return front, back, seams, triangles
-
-    #def getPatterns(self):
-    #    front = self.getFront()
-    #    back = self.getBack()
-    #    n, m = TSHIRT_SEAMS.shape
-
-    #    seams = []
-    #    for i in range(n):
-    #        for j in range(m):
-    #            if TSHIRT_SEAMS[i][j]:
-    #                if i == 2:
-    #                    front[i - 1][j] = back[i][j]
-    #                    back[i - 1][j] = front[i][j]
-
-    #                if i == 8 and j in [2, 3, 4, 28, 29, 30]:
-    #                    front[i + 1][j] = back[i][j]
-    #                    back[i + 1][j] = front[i][j]
-
-    #                if i == 9 and j == 5:
-    #                    front[i + 1][j - 1] = back[i][j]
-    #                    back[i + 1][j - 1] = front[i][j]
-
-    #                if i > 9 and j == 6:
-    #                    front[i][j - 1] = back[i][j]
-    #                    back[i][j - 1] = front[i][j]
-
-    #    return front, TSHIRT_FRONT, back, TSHIRT_BACK

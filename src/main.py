@@ -15,12 +15,6 @@ from graphic.ui_mainwindow import Ui_MainWindow
 from widgets.colordialog import MiniColorDialog
 import load.load as load
 
-################################################
-
-from datetime import date
-
-################################################
-
 BACKGROUNDSTRING = "background-color: %s"
 
 
@@ -44,7 +38,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                              "a" : False, "d" : False}
 
         self.setPalette(DarkPalette())
-        self.loadModelBtn.clicked.connect(self.load)
 
         self.plusBtn.clicked.connect(self.scalePlus)
         self.minusBtn.clicked.connect(self.scaleMinus)
@@ -72,11 +65,39 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.massDSB.valueChanged.connect(self.setMass)
         self.gravDSB.valueChanged.connect(self.setGrav)
 
+        self.clothRbtn.toggled.connect(self.switchMode)
+        self.tshirtRBtn.toggled.connect(self.switchMode)
+
+        self.sizeSB.valueChanged.connect(self.setSize)
+
         timer = QtCore.QTimer(self)
         self.dt = 5
         timer.setInterval(self.dt)
         timer.timeout.connect(self.timerActions)
         timer.start()
+
+        fpsTimer = QtCore.QTimer(self)
+        fpsTimer.setInterval(1000)
+        fpsTimer.timeout.connect(self.fpsTimerActions)
+        fpsTimer.start()
+
+
+    def setSize(self):
+        size = self.sizeSB.value()
+        self.GL.setCloth(size)
+
+
+    def switchMode(self):
+        btn = self.sender()
+
+        if btn.isChecked():
+            if btn == self.clothRbtn:
+                self.sizeSB.setEnabled(True)
+                size = self.sizeSB.value()
+                self.GL.setCloth(size)
+            else:
+                self.sizeSB.setEnabled(False)
+                self.GL.setTShirt()
 
 
     def setGrav(self):
@@ -108,16 +129,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.GL.updatePhys("wind", wind)
 
 
-    def load(self):
-        load.Load('cube.obj').load()
-        self.GL.paintGL()
-        QMessageBox.warning(
-                self,
-                ":(", "Уже "
-                + date.today().strftime('%d.%m.%Y')
-                + "!\nА эта кнопка все ещё не работает!")
-
-
     def chooseColor(self):
         self.colorWindow = MiniColorDialog(self)
         self.colorWindow.setCurrentColor(self.curColor)
@@ -133,6 +144,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.GL.update(self.dt / 1000, self.curColor.getRgbF(),
                 self.translateVec)
+
+
+    def fpsTimerActions(self):
+        fps = self.GL.getFps()
+        self.fpsLbl.setText("FPS: {:2}".format(fps))
 
 
     def scalePlus(self):

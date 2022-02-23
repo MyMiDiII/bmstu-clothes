@@ -7,12 +7,12 @@ from math import pi, cos, sin
 from graphic.objects.object import Object
 from clothes.mass import Mass
 from clothes.spring import Spring, SpringType
-from clothes.pattern import TShirt
+from clothes.pattern import Pattern
 
 ZSTEP = 1 / 100
 
 class MassSpringModel(Object):
-    def __init__(self, pattern : TShirt):
+    def __init__(self, pattern : Pattern):
         super().__init__()
 
         self.timer = 0
@@ -28,58 +28,39 @@ class MassSpringModel(Object):
         self.indices = []
         self.springs = []
 
-        front = pattern.getPatterns()
         index = 0
-        #front, back, seams, triag = pattern.getPatterns()
-        #self.indices.extend(triag)
+        parts, seams, triag, fixCond = pattern.getPatterns()
+        self.indices.extend(triag)
 
-        n, m = front.shape
-        print(n, m)
 
-        for i in range(n):
-            for j in range(m):
-                if front[i][j]:
-                    self.addMass(i, j, (-(n - 1) / 2 * self.len0,
-                                        0,
-                                        self.len0 / 2), 1)
-                    self.addTriangles(front, i, j)
+        for part in parts:
+            n, m = part[0].shape
 
-        #for i in range(n):
-        #    for j in range(m):
-        #        if front[i][j]:
-        #            self.addMass(i, j, (-(n - 1) / 2 * self.len0,
-        #                                0,
-        #                                self.len0 / 2), 1)
-        #            self.addTriangles(front, i, j)
+            for i in range(n):
+                for j in range(m):
+                    if part[0][i][j]:
+                        self.addMass(i, j, (-(n - 1) / 2 * self.len0,
+                                            0,
+                                            self.len0 / 2), part[1], fixCond)
+                        self.addTriangles(part[0], i, j)
 
-        #for i in range(n):
-        #    for j in range(m):
-        #        if back[i][j]:
-        #            self.addMass(i, j, (-(n - 1) / 2 * self.len0,
-        #                                0,
-        #                                -self.len0 / 2), -1)
-        #            self.addTriangles(back, i, j)
+        for part in parts:
+            n, m = part[0].shape
 
-        for i in range(n):
-            for j in range(m):
-                if front[i][j]:
-                    self.addSprings(front, i, j, SpringType.struct)
-                    self.addSprings(front, i, j, SpringType.shear)
-                    self.addSprings(front, i, j, SpringType.bend)
+            for i in range(n):
+                for j in range(m):
+                    if part[0][i][j]:
+                        self.addSprings(part[0], i, j, SpringType.struct)
+                        self.addSprings(part[0], i, j, SpringType.shear)
+                        self.addSprings(part[0], i, j, SpringType.bend)
 
-                #if back[i][j]:
-                #    self.addSprings(back, i, j, SpringType.struct)
-                #    self.addSprings(back, i, j, SpringType.shear)
-                #    self.addSprings(back, i, j, SpringType.bend)
-
-        #for seam in seams:
-        #    self.addSpring(*seam)
+        for seam in seams:
+            self.addSpring(*seam)
 
         self.indices = np.array(self.indices, dtype="int32")
 
 
     def addSpring(self, ind1, ind2, orderInd, springType):
-        print(ind1, ind2)
         self.masses[ind1 - 1].addSpring(
                 self.masses[ind2 - 1],
                 self.len0,
@@ -99,15 +80,13 @@ class MassSpringModel(Object):
                 self.addSpring(ind, nearInd, orderInd, springType)
 
 
-    def addMass(self, i, j, move, plus):
+    def addMass(self, i, j, move, plus, cond):
         x = move[0] + j * self.len0
         y = move[1] - (i - 4) * self.len0
-        z = move[2] + uniform(-ZSTEP, ZSTEP)
-        #cond = i < 5 and (j < 13 or j > 20)
-        cond = i == 2 and j in [2, 6]
+        z = plus * move[2] + uniform(-ZSTEP, ZSTEP)
 
         R = self.len0
-        if cond:
+        if cond(i, j):
             y = R * cos(pi / 14 + (i - 2) * pi / 7) - abs(x / 10)
             z = plus * R * sin(pi / 14 + (i - 2) * pi / 7)
 
@@ -115,7 +94,7 @@ class MassSpringModel(Object):
             Mass(
                 self.mass,
                 (x, y, z),
-                cond
+                cond(i, j)
             )
         )
 
