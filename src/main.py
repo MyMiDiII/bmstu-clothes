@@ -13,7 +13,6 @@ from PyQt5.QtGui import QColor
 from graphic.ui_mainwindow import Ui_MainWindow
 
 from widgets.colordialog import MiniColorDialog
-import load.load as load
 
 BACKGROUNDSTRING = "background-color: %s"
 
