@@ -131,10 +131,10 @@ class MassSpringModel(Object):
 
 
     def update(self, dt):
-        for i, mass in enumerate(self.masses):
+        for mass in self.masses:
             mass.updateState(dt, self.gravity, self.damping, self.wind)
 
-        for i, mass in enumerate(self.masses):
+        for mass in self.masses:
             mass.updateNormal()
 
         for _ in range(2):

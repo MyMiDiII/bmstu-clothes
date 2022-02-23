@@ -41,7 +41,6 @@ class myGL(QtOpenGL.QGLWidget):
 
         self.color = (1, 1, 1, 1.0)
         self.angle = 0
-        #self.tshirt = Cloth(9, 9)
         self.tshirt = TShirt()
         self.object = MassSpringModel(self.tshirt)
         self.object.translate(0, 0, 0)
@@ -68,17 +67,11 @@ class myGL(QtOpenGL.QGLWidget):
         self.camera.setPosition([-1.2, 0.25, 1.2])
         self.camera.rotateX(-13)
         self.camera.rotateY(23)
-        #self.camera.setPosition([-1.2, 0, 0])
-        #self.camera.rotateY(45)
 
 
     def paintGL(self):
         # очищаем экран
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-
-        # создаем объекст вершинного массива
-        VAO = gl.glGenVertexArrays(1)
-        gl.glBindVertexArray(VAO)
 
         # копируем массив вершин в вершинный буфер
         VBO = gl.glGenBuffers(1)
@@ -120,7 +113,6 @@ class myGL(QtOpenGL.QGLWidget):
         self.shader.setVec3("viewPos", *self.camera.getPosition())
 
         # рисуем
-        gl.glBindVertexArray(VAO)
         gl.glDrawElements(gl.GL_TRIANGLES, self.object.getIndices().size,
                           gl.GL_UNSIGNED_INT, None)
 

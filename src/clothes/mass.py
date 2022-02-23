@@ -99,7 +99,7 @@ class Mass:
         curPos = self.pos
 
         self.acc = self.getForce(gravity, damping, wind) / self.mass
-        self.pos = 2 * self.pos - self.prevPos + self.acc * dt * dt
+        self.pos = 2 * self.pos - self.prevPos + self.acc * dt * dt / 2
 
         self.vel = (self.pos - curPos) / dt
         self.prevPos = curPos
