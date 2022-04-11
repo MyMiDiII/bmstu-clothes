@@ -6,6 +6,7 @@
 *.dvi
 *.out
 *.toc
+*.bak
 *report.pdf
 *title.pdf
 
