@@ -8,7 +8,7 @@
 
 **Расчетно-пояснительная записка:** [РПЗ](./docs/pdf/MaslovaCG.pdf)
 
-**Презентация:** [Презентация](./docs/pdf/presentation.pdg)
+**Презентация:** [Презентация](./docs/pdf/presentation.pdf)
 
 ## Установка
 
