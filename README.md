@@ -33,7 +33,7 @@ cd ./bmstu-clothes/src
 ### Визуализация футболки
 
 ![Синяя футболка](./docs/data/img/rmblue.png)
-![Оранжевая футболка](./docs/data/img/rmorage.png)
+![Оранжевая футболка](./docs/data/img/rmorange.png)
 
 ### Визуализация ткани
 
