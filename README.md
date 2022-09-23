@@ -1,4 +1,4 @@
-# Курсовая рбаота по курсу "Компьютерная графика"
+# Курсовая работа по курсу "Компьютерная графика"
 
 **Тема:** реалистичная визуализация плечевой одежды на примере футболки
 
@@ -32,12 +32,12 @@ cd ./bmstu-clothes/src
 
 ### Визуализация футболки
 
-![Синяя футболка](./docs/data/img/rmblue.png)
-![Оранжевая футболка](./docs/data/img/rmorange.png)
+<img src="./docs/data/img/rmblue.png" alt="Синяя футболка" width="500"/>
+<img src="./docs/data/img/rmorange.png" alt="Оранжевая футболка" width="500"/>
 
 ### Визуализация ткани
 
-![Белая ткань](./docs/data/img/rmcloth.png)
+<img src="./docs/data/img/rmcloth.png" alt="Белая ткань" width="500"/>
 
 ### Демонстрация
 
