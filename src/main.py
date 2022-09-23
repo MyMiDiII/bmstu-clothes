@@ -13,13 +13,6 @@ from PyQt5.QtGui import QColor
 from graphic.ui_mainwindow import Ui_MainWindow
 
 from widgets.colordialog import MiniColorDialog
-import load.load as load
-
-################################################
-
-from datetime import date
-
-################################################
 
 BACKGROUNDSTRING = "background-color: %s"
 
@@ -38,12 +31,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.curColor = QColor(255, 255, 255, 1)
         self.colorWindow = None
+        self.wind = True
 
         self.translateVec = {"w" : False, "s" : False,
                              "a" : False, "d" : False}
 
         self.setPalette(DarkPalette())
-        self.loadModelBtn.clicked.connect(self.load)
 
         self.plusBtn.clicked.connect(self.scalePlus)
         self.minusBtn.clicked.connect(self.scaleMinus)
@@ -61,21 +54,78 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.yDownTurnBtn.clicked.connect(self.yDownRotate)
 
         self.colorBtn.clicked.connect(self.chooseColor)
+        self.windChBox.stateChanged.connect(self.switchWind)
+
+        self.ambDSB.valueChanged.connect(self.setAmb)
+        self.diffDSB.valueChanged.connect(self.setDiff)
+        self.specDSB.valueChanged.connect(self.setSpec)
+
+        self.stifDSB.valueChanged.connect(self.setStif)
+        self.massDSB.valueChanged.connect(self.setMass)
+        self.gravDSB.valueChanged.connect(self.setGrav)
+
+        self.clothRbtn.toggled.connect(self.switchMode)
+        self.tshirtRBtn.toggled.connect(self.switchMode)
+
+        self.sizeSB.valueChanged.connect(self.setSize)
 
         timer = QtCore.QTimer(self)
-        timer.setInterval(50)
+        self.dt = 5
+        timer.setInterval(self.dt)
         timer.timeout.connect(self.timerActions)
         timer.start()
 
+        fpsTimer = QtCore.QTimer(self)
+        fpsTimer.setInterval(1000)
+        fpsTimer.timeout.connect(self.fpsTimerActions)
+        fpsTimer.start()
 
-    def load(self):
-        load.Load('cube.obj').load()
-        self.GL.paintGL()
-        QMessageBox.warning(
-                self,
-                ":(", "Уже "
-                + date.today().strftime('%d.%m.%Y')
-                + "!\nА эта кнопка все ещё не работает!")
+
+    def setSize(self):
+        size = self.sizeSB.value()
+        self.GL.setCloth(size)
+
+
+    def switchMode(self):
+        btn = self.sender()
+
+        if btn.isChecked():
+            if btn == self.clothRbtn:
+                self.sizeSB.setEnabled(True)
+                size = self.sizeSB.value()
+                self.GL.setCloth(size)
+            else:
+                self.sizeSB.setEnabled(False)
+                self.GL.setTShirt()
+
+
+    def setGrav(self):
+        self.GL.setGrav(self.gravDSB.value())
+
+
+    def setMass(self):
+        self.GL.setMass(self.massDSB.value())
+
+
+    def setStif(self):
+        self.GL.setStif(self.stifDSB.value())
+
+
+    def setAmb(self):
+        self.GL.setAmb(self.ambDSB.value())
+
+
+    def setDiff(self):
+        self.GL.setDiff(self.diffDSB.value())
+
+
+    def setSpec(self):
+        self.GL.setSpec(self.specDSB.value())
+
+
+    def switchWind(self):
+        wind = self.windChBox.isChecked()
+        self.GL.updatePhys("wind", wind)
 
 
     def chooseColor(self):
@@ -91,7 +141,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 BACKGROUNDSTRING % self.curColor.name()
             )
 
-        self.GL.update(self.curColor.getRgbF(), self.translateVec)
+        self.GL.update(self.dt / 1000, self.curColor.getRgbF(),
+                self.translateVec)
+
+
+    def fpsTimerActions(self):
+        fps = self.GL.getFps()
+        self.fpsLbl.setText("FPS: {:2}".format(fps))
 
 
     def scalePlus(self):
@@ -103,27 +159,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def moveUp(self):
-        self.GL.translate((0, 0.05, 0))
+        self.GL.translate((0, 0.5, 0))
 
 
     def moveDown(self):
-        self.GL.translate((0, -0.05, 0))
+        self.GL.translate((0, -0.5, 0))
 
 
     def moveRight(self):
-        self.GL.translate((0.05, 0, 0))
+        self.GL.translate((0.5, 0, 0))
 
 
     def moveLeft(self):
-        self.GL.translate((-0.05, 0, 0))
+        self.GL.translate((-0.5, 0, 0))
 
 
     def moveFrom(self):
-        self.GL.translate((0, 0, -0.05))
+        self.GL.translate((0, 0, -0.5))
 
 
     def moveTo(self):
-        self.GL.translate((0, 0, 0.05))
+        self.GL.translate((0, 0, 0.5))
 
 
     def xLeftRotate(self):
@@ -151,6 +207,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.translateVec["a"] = True
         elif event.key() == Qt.Key_D:
             self.translateVec["d"] = True
+        elif event.key() == Qt.Key_P:
+            self.GL.switchPolyMode()
 
 
     def keyReleaseEvent(self, event):

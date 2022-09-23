@@ -86,7 +86,7 @@ FUNCTION {output.nonnull}
     { ", " * write$ }
     { output.state after.block =
         { add.period$ write$
-          " " " " *  write$
+          " " "--- " *  write$
           newline$
           "\newblock " write$
         }
@@ -374,11 +374,11 @@ FUNCTION {bbl.of}      %  { "\bblof{}" }
 
 FUNCTION {bbl.etal}      %  { "\bblof{}" }
 {  curlanguage "english" =
-    {"et~al."}
+    {"[et~al.]"}
     { curlanguage "ukrainian" =
         {"{та~ін.}"}
         { curlanguage "russian" =
-           {"{[и~др.]}"}
+           {"{[и др.]}"}
            {"language is not defined: " language  "at al" * * warning$ "at al."}
          if$}
       if$}

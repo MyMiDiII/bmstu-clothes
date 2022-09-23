@@ -21,7 +21,7 @@ class Camera(Object):
         self.roll = 0.0
 
         self.worldUp = glm.vec3(0, 1, 0)
-        self.speed = 0.04
+        self.speed = 0.02
         self.sensitivity = 0.05
 
         self.__updateVectors()
@@ -43,6 +43,10 @@ class Camera(Object):
         self.front = glm.normalize(newFront)
         self.right = glm.normalize(glm.cross(self.front, self.worldUp))
         self.up = glm.normalize(glm.cross(self.right, self.front))
+
+
+    def getPosition(self):
+        return [self.position.x, self.position.y, self.position.z]
 
 
     def getProjMatrix(self):
@@ -87,12 +91,8 @@ class Camera(Object):
     def continousTranslate(self, directions):
         self.position += self.speed * self.front * directions["w"]
         self.position -= self.speed * self.front * directions["s"]
-        self.position += (self.speed
-                          * glm.normalize(glm.cross(self.position, self.up))
-                          * directions["a"])
-        self.position -= (self.speed
-                          * glm.normalize(glm.cross(self.position, self.up))
-                          * directions["d"])
+        self.position -= self.speed * self.right * directions["a"]
+        self.position += self.speed * self.right * directions["d"]
 
 
     def rotation(self, deltaX, deltaY):

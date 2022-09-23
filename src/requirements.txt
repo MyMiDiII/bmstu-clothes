@@ -1,0 +1,6 @@
+glfw==2.5.5
+pyglm==2.5.7
+numpy==1.23.3
+PyOpenGL==3.1.6
+PyQt5==5.15.7
+pyqt-darktheme==1.2.5
