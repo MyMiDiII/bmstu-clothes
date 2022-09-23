@@ -10,15 +10,15 @@
 
 **Презентация:** [Презентация](./docs/pdf/presentation.pdf)
 
-## Установка
+## Запуск
+
+0. Установить пакеты `python3`, `python-pip3`, `make`
 
 1. Склонировать репозиторий:
 
 ```bash
 git clone https://github.com/MyMiDiII/bmstu-clothes.git
 ```
-
-2. Установить 
 
 3. Перейти в директорию со скриптами
 
@@ -27,6 +27,16 @@ cd ./bmstu-clothes/src
 ```
 
 4. Установить зависимости
+
+```bash
+pip install -r requirements.txt
+```
+
+5. Запустить
+
+```bash
+make
+```
 
 ## Примеры работы программы
 
