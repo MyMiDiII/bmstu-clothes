@@ -14,7 +14,7 @@ https://user-images.githubusercontent.com/61819948/191996441-1401b508-0245-40a7-
 
 ## Запуск
 
-0. Установить пакеты `python3`, `python-pip3`, `make`
+0. Установить пакеты `python3`, `python-pip3`, `make`, `git`
 
 1. Склонировать репозиторий:
 
