@@ -20,7 +20,7 @@
 git clone https://github.com/MyMiDiII/bmstu-clothes.git
 ```
 
-3. Перейти в директорию со скриптами
+3. Перейти в директорию с исходным кодом
 
 ```bash
 cd ./bmstu-clothes/src
@@ -48,8 +48,6 @@ make
 ### Визуализация ткани
 
 <img src="./docs/data/img/rmcloth.png" alt="Белая ткань" width="500"/>
-
-### Демонстрация
 
 ```
 Курсовая работа по курсу "Компьютерная графика"
